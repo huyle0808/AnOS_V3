@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AnOS V3</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#eef3ff;
+}
+
+header{
+    background:#2563eb;
+    color:white;
+    padding:15px;
+    font-size:28px;
+    font-weight:bold;
+    text-align:center;
+}
+
+#messages{
+    padding:15px;
+    margin-bottom:90px;
+}
+
+.user,
+.bot{
+    display:flex;
+    margin:12px 0;
+}
+
+.user{
+    justify-content:flex-end;
+}
+
+.bot{
+    justify-content:flex-start;
+}
+
+.bubble{
+    max-width:80%;
+    padding:12px;
+    border-radius:15px;
+    font-size:18px;
+    line-height:1.5;
+    box-shadow:0 2px 8px rgba(0,0,0,.15);
+}
+
+.user .bubble{
+    background:#2563eb;
+    color:white;
+}
+
+.bot .bubble{
+    background:white;
+    color:#222;
+}
+
+#inputBar{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    display:flex;
+    padding:10px;
+    background:white;
+    box-shadow:0 -2px 10px rgba(0,0,0,.15);
+}
+
+#prompt{
+    flex:1;
+    padding:12px;
+    font-size:18px;
+    border-radius:10px;
+    border:1px solid #aaa;
+}
+
+#send{
+    margin-left:10px;
+    padding:12px 20px;
+    font-size:18px;
+    border:none;
+    border-radius:10px;
+    background:#2563eb;
+    color:white;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>🤖 AnOS V3</header>
+
+<div id="messages"></div>
+
+<div id="inputBar">
+<input id="prompt" placeholder="Nhập tin nhắn...">
+<button id="send">Gửi</button>
+</div>
+
+<script type="module" src="js/app.js?v=999"></script>
+<script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+<script>eruda.init();</script>
+</body>
+</html>
