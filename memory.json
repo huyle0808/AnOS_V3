@@ -3,22 +3,13 @@
     "favorite": [
       "đọc sách",
       "lập trình",
-      "Ai"
+      "Ai",
+      "AI"
     ],
     "age": "35",
     "name": "Huy"
   },
   "history": [
-    "👤 Tên tôi là Huy",
-    "🤖 Mình sẽ nhớ bạn tên là Huy 😊",
-    "👤 Tên tôi là gì",
-    "🤖 😊 Xin lỗi nhé, Gemini hiện đang bận và mình chưa biết trả lời câu này.",
-    "👤 Tên tôi là Huy",
-    "🤖 Mình sẽ nhớ bạn tên là Huy 😊",
-    "👤 Tên tôi là gì",
-    "🤖 Tên của bạn là Huy. 😊",
-    "👤 Tôi 35 tuổi",
-    "🤖 Mình sẽ nhớ bạn 35 tuổi 😊",
     "👤 Tôi bao nhiêu tuổi",
     "🤖 Bạn 35 tuổi. 😊",
     "👤 Tên tôi là Huy",
@@ -108,6 +99,16 @@
     "👤 Tôi thích Ai",
     "🤖 Mình sẽ nhớ bạn thích Ai 😊",
     "👤 Tôi tên Huy",
-    "🤖 Mình sẽ nhớ bạn tên là Huy 😊"
+    "🤖 Mình sẽ nhớ bạn tên là Huy 😊",
+    "👤 Tôi thích AI",
+    "🤖 Mình sẽ nhớ bạn thích AI 😊",
+    "👤 Tôi thích lập trình",
+    "🤖 Mình sẽ nhớ bạn thích lập trình 😊",
+    "👤 Tôi thích đọc sách",
+    "🤖 Mình sẽ nhớ bạn thích đọc sách 😊",
+    "👤 Tôi hợp nghề gì",
+    "🤖 Theo những gì mình nhớ, bạn có thể phù hợp với: Kỹ sư AI, Lập trình viên, Nghiên cứu. 😊",
+    "👤 Điểm mạnh của tôi là gì",
+    "🤖 Theo những gì mình nhớ, điểm mạnh của bạn là: ham học hỏi, tư duy logic, đam mê công nghệ."
   ]
 }

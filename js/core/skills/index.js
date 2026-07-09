@@ -8,6 +8,7 @@ import { history } from "./history.js";
 import { profile } from "./profile.js";
 import { contextSkill } from "./context.js";
 import { calculator } from "./calculator.js";
+import { reason } from "./reason.js";
 import { fallback } from "./fallback.js";
 
 export const skills = [
@@ -17,7 +18,8 @@ export const skills = [
     thanks,
     remember,
     teach,
-    profile,      // Đưa lên trước
+    profile,
+    reason,      // <-- thêm dòng này
     history,
     contextSkill,
     calculator,
