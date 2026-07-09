@@ -17,8 +17,8 @@ export const skills = [
     thanks,
     remember,
     teach,
+    profile,      // Đưa lên trước
     history,
-    profile,
     contextSkill,
     calculator,
     fallback

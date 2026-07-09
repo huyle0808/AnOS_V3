@@ -12,6 +12,7 @@ export function profile(message) {
     ) {
 
         const p = getProfile();
+alert(JSON.stringify(p));
 console.log("PROFILE =", p);
         let result = [];
 
@@ -20,7 +21,8 @@ console.log("PROFILE =", p);
         if (p.job) result.push("💼 Nghề: " + p.job);
         if (p.hometown) result.push("🏠 Nơi ở: " + p.hometown);
         if (p.color) result.push("🎨 Màu yêu thích: " + p.color);
-        if (p.drink) result.push("☕ Đồ uống yêu thích: " + p.drink);
+if (p.drink) result.push("☕ Đồ uống yêu thích: " + p.drink);
+if (p.favorite) result.push("❤️ Sở thích: " + p.favorite);
 
         if (result.length === 0) {
             return "Mình chưa biết gì về bạn.";

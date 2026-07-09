@@ -85,32 +85,6 @@ if (
     return "Mình chưa biết bạn ở đâu.";
 }
 // ===== BẠN BIẾT GÌ VỀ TÔI =====
-if (
-    text.includes("bạn biết gì về tôi") ||
-    text.includes("bạn nhớ gì về tôi")
-) {
 
-    let info = [];
-
-    const name = recall("name");
-    const age = recall("age");
-    const job = recall("job");
-    const hometown = recall("hometown");
-    const color = recall("color");
-    const drink = recall("drink");
-
-    if (name) info.push("Tên: " + name);
-    if (age) info.push("Tuổi: " + age);
-    if (job) info.push("Nghề: " + job);
-    if (hometown) info.push("Nơi ở: " + hometown);
-    if (color) info.push("Màu yêu thích: " + color);
-    if (drink) info.push("Đồ uống yêu thích: " + drink);
-
-    if (info.length === 0) {
-        return "Mình chưa biết gì về bạn.";
-    }
-
-    return "Đây là những gì mình nhớ về bạn:\n\n" + info.join("\n");
-}
     return null;
 }

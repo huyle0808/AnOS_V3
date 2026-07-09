@@ -1,6 +1,7 @@
 
 import {
     remember as saveMemory,
+    recall,
     forget,
     clearProfile
 } from "../memory.js";
@@ -11,29 +12,41 @@ console.log("REMEMBER SKILL:", message);
 
     // ===== NHỚ TÊN =====
     if (
-        lower.startsWith("tên mình là ") ||
-        (
-            lower.startsWith("tên tôi là ") &&
-            !lower.includes("tên tôi là gì")
-        ) ||
-        (
-            lower.startsWith("tôi là ") &&
-            !lower.includes("tôi là ai")
-        )
-    ) {
+    lower.startsWith("tôi tên là ") ||
+    lower.startsWith("tên tôi là ") ||
+    lower.startsWith("tên mình là ") ||
+    (
+        lower.startsWith("tôi là ") &&
+        !lower.includes("tôi là ai")
+    )
+) {
 
-        const name = text
-            .replace(/tên mình là/i, "")
-            .replace(/tên tôi là/i, "")
-            .replace(/tôi là/i, "")
-            .trim();
+    const name = text
+        .replace(/tôi tên là/i, "")
+        .replace(/tên tôi là/i, "")
+        .replace(/tên mình là/i, "")
+        .replace(/tôi là/i, "")
+        .trim();
 
-        if (name) {
-            saveMemory("name", name);
-            return "Mình sẽ nhớ bạn tên là " + name + " 😊";
-        }
+    if (name) {
+        saveMemory("name", name);
+        return "Mình sẽ nhớ bạn tên là " + name + " 😊";
+    }
+}
+// ===== HỎI SỞ THÍCH =====
+if (
+    lower.includes("tôi thích gì") ||
+    lower.includes("sở thích của tôi")
+) {
+
+    const favorite = recall("favorite");
+
+    if (favorite) {
+        return "Bạn thích " + favorite + " 😊";
     }
 
+    return "Mình chưa biết sở thích của bạn.";
+}
     // ===== NHỚ ĐỒ UỐNG =====
     let m = text.match(/^tôi thích uống\s+(.+)$/i);
 
@@ -54,6 +67,17 @@ console.log("REMEMBER SKILL:", message);
             return "Mình sẽ nhớ bạn thích uống " + drink + " 😊";
         }
     }
+    // ===== GHI NHỚ SỞ THÍCH =====
+let like = message.match(/^tôi thích\s+(.+)$/i);
+
+if (like) {
+
+    const value = like[1].trim();
+
+    saveMemory("favorite", value);
+
+    return "Mình sẽ nhớ bạn thích " + value + " 😊";
+}
 // Nhớ nghề
 
 if (lower.startsWith("tôi làm ")) {

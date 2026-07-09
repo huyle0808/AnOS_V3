@@ -5,10 +5,10 @@ export function history(message) {
     const text = message.toLowerCase();
 
     if (
-        text.includes("lịch sử") ||
-        text.includes("đã nói gì") ||
-        text.includes("nhớ gì")
-    ) {
+    text.includes("lịch sử") ||
+    text.includes("đã nói gì") ||
+    text.includes("bạn còn nhớ cuộc trò chuyện")
+) {
 
         const list = getHistory();
 
