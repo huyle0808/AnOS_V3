@@ -69,3 +69,9 @@ export function forget(key) {
 
     return false;
 }
+// Xóa toàn bộ thông tin đã nhớ
+export function clearProfile() {
+
+    Object.keys(profile).forEach(key => delete profile[key]);
+
+}

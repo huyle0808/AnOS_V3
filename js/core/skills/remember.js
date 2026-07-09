@@ -1,5 +1,9 @@
-import { remember as saveMemory, forget } from "../memory.js";
 
+import {
+    remember as saveMemory,
+    forget,
+    clearProfile
+} from "../memory.js";
 export function remember(message) {
 console.log("REMEMBER SKILL:", message);
     const text = message.trim();
@@ -118,6 +122,17 @@ if (lower.includes("quên tên")) {
 if (lower.includes("quên tuổi")) {
     forget("age");
     return "Mình đã quên tuổi của bạn. 😊";
+}
+// ===== QUÊN TẤT CẢ =====
+if (
+    lower.includes("quên tất cả") ||
+    lower.includes("xóa toàn bộ thông tin") ||
+    lower.includes("đặt lại trí nhớ")
+) {
+
+    clearProfile();
+
+    return "Mình đã quên toàn bộ thông tin về bạn. 😊";
 }
     return null;
     

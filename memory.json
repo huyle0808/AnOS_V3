@@ -1,13 +1,6 @@
 {
-  "profile": {
-    "name": "Huy",
-    "drink": "caphe"
-  },
+  "profile": {},
   "history": [
-    "👤 Tên tôi là gì?",
-    "🤖 😊 Xin lỗi nhé, Gemini hiện đang bận và mình chưa biết trả lời câu này.",
-    "👤 Xin chào",
-    "🤖 Chào bạn 👋 Chúc bạn một ngày thật vui!",
     "👤 Tên tôi là Huy",
     "🤖 😊 Xin lỗi nhé, Gemini hiện đang bận và mình chưa biết trả lời câu này.",
     "👤 Tên tôi là gì",
@@ -103,6 +96,10 @@
     "👤 Quên tuổi",
     "🤖 Mình đã quên tuổi của bạn. 😊",
     "👤 Tôi bao nhiêu tuổi",
-    "🤖 Mình chưa biết tuổi của bạn."
+    "🤖 Mình chưa biết tuổi của bạn.",
+    "👤 Quên tất cả",
+    "🤖 Mình đã quên toàn bộ thông tin về bạn. 😊",
+    "👤 Tôi tên gì",
+    "🤖 Mình chưa biết tên của bạn."
   ]
 }
