@@ -6,6 +6,7 @@ import {
 import { askAI } from "./ai.js";
 import { saveMemory } from "./sync.js";
 import { askKnowledge } from "./skills/knowledge.js";
+import { route } from "./router.js";
 export async function pipeline(message) {
 
     
@@ -43,24 +44,21 @@ export async function pipeline(message) {
         }
     }
 
-    // ===== THỬ XỬ LÝ BẰNG SKILL =====
-    let reply = null;
+// ===== THỬ XỬ LÝ BẰNG SKILL =====
+let reply = await route(text);
+
 // ===== THỬ KIẾN THỨC ĐÃ HỌC =====
 if (!reply) {
 
-    
+    const answer = await askKnowledge(text);
 
-const answer = await askKnowledge(text);
+    if (answer) {
+        reply = answer;
+    }
 
-
-
-if (answer) {
-    
-    return answer;
 }
 
-    
-}
+
     // ===== KHÔNG CÓ SKILL THÌ GỌI GEMINI =====
     if (!reply) {
 

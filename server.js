@@ -168,6 +168,15 @@ app.post("/memory", (req, res) => {
     });
 
 });
+app.post("/memory", (req, res) => {
+
+    saveMemory(req.body);
+
+    res.json({
+        ok: true
+    });
+
+});
 // ================= KNOWLEDGE FIND =================
 
 app.post("/knowledge/find", (req, res) => {

@@ -1,7 +1,7 @@
 import { recall } from "../memory.js";
 
 export function whoami(message) {
-
+console.log("WHOAMI:", message);
     const text = message.toLowerCase().trim();
 
     // Giới thiệu AnOS
@@ -11,7 +11,21 @@ export function whoami(message) {
     ) {
         return "Mình là AnOS V3, trợ lý AI của bạn. 😊";
     }
+// Hỏi tên
+if (
+    text.includes("tên tôi là gì") ||
+    text.includes("tôi tên gì") ||
+    text.includes("tên mình là gì")
+) {
 
+    const name = recall("name");
+
+    if (name) {
+        return "Tên của bạn là " + name + ". 😊";
+    }
+
+    return "Mình chưa biết tên của bạn.";
+}
     // Hỏi nghề
     if (
         text.includes("tôi làm nghề gì") ||
