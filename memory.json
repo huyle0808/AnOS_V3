@@ -10,8 +10,6 @@
     "name": "Huy"
   },
   "history": [
-    "👤 Tôi bao nhiêu tuổi",
-    "🤖 Bạn 35 tuổi. 😊",
     "👤 Tên tôi là Huy",
     "🤖 Mình sẽ nhớ bạn tên là Huy 😊",
     "👤 Tên tôi là gì",
@@ -109,6 +107,8 @@
     "👤 Tôi hợp nghề gì",
     "🤖 Theo những gì mình nhớ, bạn có thể phù hợp với: Kỹ sư AI, Lập trình viên, Nghiên cứu. 😊",
     "👤 Điểm mạnh của tôi là gì",
-    "🤖 Theo những gì mình nhớ, điểm mạnh của bạn là: ham học hỏi, tư duy logic, đam mê công nghệ."
+    "🤖 Theo những gì mình nhớ, điểm mạnh của bạn là: ham học hỏi, tư duy logic, đam mê công nghệ.",
+    "👤 Tôi hợp nghề gì",
+    "🤖 Theo những gì mình nhớ, bạn có thể phù hợp với: Kỹ sư AI, Lập trình viên, Nghiên cứu 😊"
   ]
 }
