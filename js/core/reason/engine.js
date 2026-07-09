@@ -1,5 +1,7 @@
 import { knowledge } from "./knowledge.js";
-import { rules } from "./rules.js";
+import { applyRules } from "./inference.js";
+
+const DEBUG = true;
 
 // Thêm dữ liệu nhưng không bị trùng
 function addUnique(target, items) {
@@ -31,13 +33,9 @@ function addUnique(target, items) {
         const old = target.find(x => x.id === obj.id);
 
         if (old) {
-
             old.score += obj.score;
-
         } else {
-
             target.push(obj);
-
         }
 
     }
@@ -57,51 +55,48 @@ export function analyze(profile) {
         ? profile.favorite
         : [];
 
+    const fields = [
+        "facts",
+        "strengths",
+        "jobs",
+        "suggestions"
+    ];
+
     // ===== Đọc Knowledge =====
     for (const fav of favorite) {
 
         const key = fav.toLowerCase();
-
         const data = knowledge[key];
 
         if (!data) continue;
 
-        addUnique(result.facts, data.facts);
-addUnique(result.strengths, data.strengths);
-addUnique(result.jobs, data.jobs);
-addUnique(result.suggestions, data.suggestions);
+        for (const field of fields) {
+            addUnique(result[field], data[field]);
+        }
 
     }
 
-// ===== Áp dụng Rules =====
+    // ===== Áp dụng Rules =====
+    applyRules(profile, result, addUnique);
 
-for (const rule of rules) {
+    // ===== Sắp xếp theo điểm =====
+    for (const field of fields) {
 
-    if (!rule.when(profile))
-        continue;
+        result[field] = result[field]
+            .sort((a, b) => b.score - a.score)
+            .map(x => x.text);
 
-    if (rule.facts)
-        addUnique(result.facts, rule.facts);
+    }
 
-    if (rule.strengths)
-        addUnique(result.strengths, rule.strengths);
+    if (DEBUG) {
 
-    if (rule.jobs)
-        addUnique(result.jobs, rule.jobs);
+        console.log("FACTS:", result.facts);
+        console.log("STRENGTHS:", result.strengths);
+        console.log("JOBS:", result.jobs);
+        console.log("SUGGESTIONS:", result.suggestions);
 
-    if (rule.suggestions)
-        addUnique(result.suggestions, rule.suggestions);
+    }
 
-}
-    // ===== Chuyển object -> text =====
-    result.facts = result.facts.map(x => x.text);
-    result.strengths = result.strengths.map(x => x.text);
-    result.jobs = result.jobs.map(x => x.text);
-    result.suggestions = result.suggestions.map(x => x.text);
-console.log("FACTS:", result.facts);
-console.log("STRENGTHS:", result.strengths);
-console.log("JOBS:", result.jobs);
-console.log("SUGGESTIONS:", result.suggestions);
     return result;
 
 }
