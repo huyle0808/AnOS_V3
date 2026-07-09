@@ -1,10 +1,21 @@
 import { getProfile } from "../memory.js";
-
+import { rules } from "./rules.js";
 export function reason(message) {
 console.log("REASON:", message);
     const text = message.toLowerCase();
     const p = getProfile();
+const facts = [];
 
+for (const rule of rules) {
+
+    if (rule.when(p)) {
+
+        console.log("RULE:", rule.fact);
+        facts.push(rule.fact);
+
+    }
+
+}
     const fav = Array.isArray(p.favorite)
         ? p.favorite.map(x => x.toLowerCase())
         : [];
@@ -62,6 +73,18 @@ console.log("REASON:", message);
 
         return "Mình chưa đủ dữ liệu để đánh giá.";
     }
+// ===== PHÂN TÍCH BẢN THÂN =====
+if (
+    text.includes("hãy phân tích tôi") ||
+    text.includes("phân tích bản thân tôi")
+) {
 
+    if (facts.length === 0) {
+        return "Mình chưa có đủ dữ liệu để phân tích.";
+    }
+
+    return "Theo những gì mình biết:<br><br>• "
+        + facts.join("<br>• ");
+}
     return null;
 }
