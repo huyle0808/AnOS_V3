@@ -1,6 +1,7 @@
 
 import {
     remember as saveMemory,
+    rememberList,
     recall,
     forget,
     clearProfile
@@ -41,9 +42,13 @@ if (
 
     const favorite = recall("favorite");
 
-    if (favorite) {
-        return "Bạn thích " + favorite + " 😊";
-    }
+if (Array.isArray(favorite)) {
+    return "Bạn thích: " + favorite.join(", ") + " 😊";
+}
+
+if (favorite) {
+    return "Bạn thích " + favorite + " 😊";
+}
 
     return "Mình chưa biết sở thích của bạn.";
 }
@@ -68,13 +73,15 @@ if (
         }
     }
     // ===== GHI NHỚ SỞ THÍCH =====
+// ===== GHI NHỚ SỞ THÍCH =====
+// ===== GHI NHỚ SỞ THÍCH =====
 let like = message.match(/^tôi thích\s+(.+)$/i);
 
 if (like) {
 
     const value = like[1].trim();
 
-    saveMemory("favorite", value);
+    rememberList("favorite", value);
 
     return "Mình sẽ nhớ bạn thích " + value + " 😊";
 }

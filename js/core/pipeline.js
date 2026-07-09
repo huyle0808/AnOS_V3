@@ -1,7 +1,8 @@
 
 import {
     addHistory,
-    remember
+    remember,
+    rememberList
 } from "./memory.js";
 import { askAI } from "./ai.js";
 import { saveMemory } from "./sync.js";

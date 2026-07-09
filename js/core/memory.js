@@ -4,7 +4,17 @@ const history = [];
 export function remember(key, value) {
     profile[key] = value;
 }
+export function rememberList(key, value) {
 
+    if (!Array.isArray(profile[key])) {
+        profile[key] = [];
+    }
+
+    if (!profile[key].includes(value)) {
+        profile[key].push(value);
+    }
+
+}
 export function recall(key) {
     return profile[key];
 }

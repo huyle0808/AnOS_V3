@@ -12,8 +12,9 @@ export function profile(message) {
     ) {
 
         const p = getProfile();
-alert(JSON.stringify(p));
-console.log("PROFILE =", p);
+        alert(JSON.stringify(p));
+        console.log("PROFILE =", p);
+
         let result = [];
 
         if (p.name) result.push("👤 Tên: " + p.name);
@@ -21,15 +22,26 @@ console.log("PROFILE =", p);
         if (p.job) result.push("💼 Nghề: " + p.job);
         if (p.hometown) result.push("🏠 Nơi ở: " + p.hometown);
         if (p.color) result.push("🎨 Màu yêu thích: " + p.color);
-if (p.drink) result.push("☕ Đồ uống yêu thích: " + p.drink);
-if (p.favorite) result.push("❤️ Sở thích: " + p.favorite);
+        if (p.drink) result.push("☕ Đồ uống yêu thích: " + p.drink);
+
+        if (Array.isArray(p.favorite)) {
+
+            result.push(
+                "❤️ Sở thích:<br>• " +
+                p.favorite.join("<br>• ")
+            );
+
+        } else if (p.favorite) {
+
+            result.push("❤️ Sở thích: " + p.favorite);
+
+        }
 
         if (result.length === 0) {
             return "Mình chưa biết gì về bạn.";
         }
 
         return result.join("<br>");
-
     }
 
     return null;
