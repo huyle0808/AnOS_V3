@@ -1,7 +1,7 @@
-import { remember as saveMemory } from "../memory.js";
+import { remember as saveMemory, forget } from "../memory.js";
 
 export function remember(message) {
-
+console.log("REMEMBER SKILL:", message);
     const text = message.trim();
     const lower = text.toLowerCase();
 
@@ -108,6 +108,16 @@ if (hometown) {
 
         return "Mình sẽ nhớ bạn ở " + hometown[1].trim() + " 😊";
     }
+}
+// ===== QUÊN THÔNG TIN =====
+if (lower.includes("quên tên")) {
+    forget("name");
+    return "Mình đã quên tên của bạn. 😊";
+}
+
+if (lower.includes("quên tuổi")) {
+    forget("age");
+    return "Mình đã quên tuổi của bạn. 😊";
 }
     return null;
     

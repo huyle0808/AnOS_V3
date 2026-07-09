@@ -24,7 +24,24 @@ export async function pipeline(message) {
             remember("name", name);
         }
     }
+// ===== GHI NHỚ TUỔI =====
+m = text.match(/^tôi\s+(\d+)\s+tuổi$/i);
 
+if (m) {
+    remember("age", m[1]);
+}
+// ===== GHI NHỚ NGHỀ =====
+m = text.match(/^tôi làm\s+(.+)$/i);
+
+if (m) {
+
+    const job = m[1].trim();
+
+    if (job) {
+        remember("job", job);
+    }
+
+}
     // ===== GHI NHỚ ĐỒ UỐNG =====
     m = text.match(/^tôi thích uống\s+(.+)$/i);
 

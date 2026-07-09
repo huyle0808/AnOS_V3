@@ -49,3 +49,23 @@ export function setHistory(data) {
 export function clearHistory() {
     history.length = 0;
 }
+// Lấy tất cả các khóa đang nhớ
+export function getMemoryKeys() {
+    return Object.keys(profile);
+}
+
+// Kiểm tra có nhớ khóa nào không
+export function hasMemory(key) {
+    return Object.prototype.hasOwnProperty.call(profile, key);
+}
+
+// Xóa một thông tin đã nhớ
+export function forget(key) {
+
+    if (hasMemory(key)) {
+        delete profile[key];
+        return true;
+    }
+
+    return false;
+}
