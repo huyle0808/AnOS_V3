@@ -11,13 +11,37 @@ export const rules = [
                    f.includes("lập trình");
         },
 
-        fact: "Bạn có thiên hướng phát triển AI và phần mềm.",
+        facts: [
+            {
+                id: "ai-software",
+                text: "Bạn có thiên hướng phát triển AI và phần mềm.",
+                score: 10
+            }
+        ],
 
-        job: "AI Software Engineer",
+        jobs: [
+            {
+                id: "ai-software-engineer",
+                text: "AI Software Engineer",
+                score: 10
+            }
+        ],
 
-        strength: "Khả năng kết hợp giữa AI và lập trình.",
+        strengths: [
+            {
+                id: "ai-programming",
+                text: "Khả năng kết hợp giữa AI và lập trình.",
+                score: 8
+            }
+        ],
 
-        suggestion: "Nên xây dựng các dự án AI thực tế."
+        suggestions: [
+            {
+                id: "build-ai-project",
+                text: "Nên xây dựng các dự án AI thực tế.",
+                score: 6
+            }
+        ]
     },
 
     {
@@ -31,13 +55,37 @@ export const rules = [
                    f.includes("nghiên cứu");
         },
 
-        fact: "Bạn có xu hướng học tập chuyên sâu.",
+        facts: [
+            {
+                id: "deep-learning",
+                text: "Bạn có xu hướng học tập chuyên sâu.",
+                score: 10
+            }
+        ],
 
-        job: "Nhà nghiên cứu",
+        jobs: [
+            {
+                id: "researcher",
+                text: "Nhà nghiên cứu",
+                score: 9
+            }
+        ],
 
-        strength: "Khả năng tự học rất tốt.",
+        strengths: [
+            {
+                id: "self-learning",
+                text: "Khả năng tự học rất tốt.",
+                score: 8
+            }
+        ],
 
-        suggestion: "Nên tham gia các đề tài nghiên cứu."
+        suggestions: [
+            {
+                id: "research-project",
+                text: "Nên tham gia các đề tài nghiên cứu.",
+                score: 6
+            }
+        ]
     },
 
     {
@@ -51,13 +99,37 @@ export const rules = [
                    f.includes("thẩm mỹ");
         },
 
-        fact: "Bạn có thể phù hợp với lĩnh vực bác sĩ thẩm mỹ.",
+        facts: [
+            {
+                id: "cosmetic-doctor",
+                text: "Bạn có thể phù hợp với lĩnh vực bác sĩ thẩm mỹ.",
+                score: 10
+            }
+        ],
 
-        job: "Bác sĩ thẩm mỹ",
+        jobs: [
+            {
+                id: "cosmetic-surgeon",
+                text: "Bác sĩ thẩm mỹ",
+                score: 10
+            }
+        ],
 
-        strength: "Có khả năng kết hợp chuyên môn và thẩm mỹ.",
+        strengths: [
+            {
+                id: "medical-aesthetic",
+                text: "Có khả năng kết hợp chuyên môn và thẩm mỹ.",
+                score: 8
+            }
+        ],
 
-        suggestion: "Nên học thêm về phẫu thuật thẩm mỹ."
+        suggestions: [
+            {
+                id: "study-cosmetic",
+                text: "Nên học thêm về phẫu thuật thẩm mỹ.",
+                score: 6
+            }
+        ]
     }
 
 ];

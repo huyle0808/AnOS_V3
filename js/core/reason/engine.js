@@ -8,36 +8,35 @@ function addUnique(target, items) {
 
     for (const item of items) {
 
-        // Kiểu cũ: chuỗi
+        let obj;
+
         if (typeof item === "string") {
 
-            const exists = target.some(x => x.text === item);
+            obj = {
+                id: item.toLowerCase(),
+                text: item,
+                score: 1
+            };
 
-            if (!exists) {
-                target.push({
-                    id: item.toLowerCase(),
-                    text: item
-                });
-            }
+        } else {
 
-            continue;
+            obj = {
+                id: item.id ?? item.text.toLowerCase(),
+                text: item.text,
+                score: item.score ?? 1
+            };
+
         }
 
-        // Kiểu mới: object {id,text}
-        if (item && typeof item === "object") {
+        const old = target.find(x => x.id === obj.id);
 
-            const id = item.id || item.text;
+        if (old) {
 
-            const exists = target.some(x => x.id === id);
+            old.score += obj.score;
 
-            if (!exists) {
+        } else {
 
-                target.push({
-                    id,
-                    text: item.text
-                });
-
-            }
+            target.push(obj);
 
         }
 
@@ -68,37 +67,41 @@ export function analyze(profile) {
         if (!data) continue;
 
         addUnique(result.facts, data.facts);
-        addUnique(result.strengths, data.strengths);
-        addUnique(result.jobs, data.jobs);
-        addUnique(result.suggestions, data.suggestions);
+addUnique(result.strengths, data.strengths);
+addUnique(result.jobs, data.jobs);
+addUnique(result.suggestions, data.suggestions);
 
     }
 
-    // ===== Áp dụng Rules =====
-    for (const rule of rules) {
+// ===== Áp dụng Rules =====
 
-        if (!rule.when(profile)) continue;
+for (const rule of rules) {
 
-        if (rule.fact)
-            addUnique(result.facts, [rule.fact]);
+    if (!rule.when(profile))
+        continue;
 
-        if (rule.strength)
-            addUnique(result.strengths, [rule.strength]);
+    if (rule.facts)
+        addUnique(result.facts, rule.facts);
 
-        if (rule.job)
-            addUnique(result.jobs, [rule.job]);
+    if (rule.strengths)
+        addUnique(result.strengths, rule.strengths);
 
-        if (rule.suggestion)
-            addUnique(result.suggestions, [rule.suggestion]);
+    if (rule.jobs)
+        addUnique(result.jobs, rule.jobs);
 
-    }
+    if (rule.suggestions)
+        addUnique(result.suggestions, rule.suggestions);
 
+}
     // ===== Chuyển object -> text =====
     result.facts = result.facts.map(x => x.text);
     result.strengths = result.strengths.map(x => x.text);
     result.jobs = result.jobs.map(x => x.text);
     result.suggestions = result.suggestions.map(x => x.text);
-
+console.log("FACTS:", result.facts);
+console.log("STRENGTHS:", result.strengths);
+console.log("JOBS:", result.jobs);
+console.log("SUGGESTIONS:", result.suggestions);
     return result;
 
 }

@@ -20,7 +20,28 @@ export const knowledge = {
             "Nên học Python.",
             "Nên học Machine Learning.",
             "Nên làm dự án AI."
-        ]
+        ],
+
+        links: {
+
+            related: [
+                "lập trình",
+                "toán",
+                "machine learning"
+            ],
+
+            learn: [
+                "Python",
+                "Machine Learning",
+                "Deep Learning"
+            ],
+
+            careers: [
+                "AI Software Engineer",
+                "AI Researcher"
+            ]
+
+        }
 
     },
 
@@ -41,7 +62,28 @@ export const knowledge = {
         suggestions: [
             "Nên luyện thuật toán.",
             "Nên xây dựng dự án thực tế."
-        ]
+        ],
+
+        links: {
+
+            related: [
+                "ai",
+                "python",
+                "javascript"
+            ],
+
+            learn: [
+                "Cấu trúc dữ liệu",
+                "Thuật toán",
+                "Thiết kế phần mềm"
+            ],
+
+            careers: [
+                "Software Engineer",
+                "Full Stack Developer"
+            ]
+
+        }
 
     },
 
