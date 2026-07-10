@@ -6,6 +6,8 @@ import { addExplanation } from "./explanation.js";
 import { scoreItem } from "./score.js";
 import { buildReasoning } from "./reasoning.js";
 import { detectGoals } from "./goal.js";
+import { detectPersonality } from "./personality.js";
+import { detectEmotion } from "./emotion.js";
 const DEBUG = true;
 // Thêm dữ liệu nhưng không bị trùng
 function addUnique(target, items) {
@@ -55,6 +57,8 @@ export function analyze(profile) {
     const result = {
     facts: [],
     strengths: [],
+    personality: [],
+    emotion: [],
     jobs: [],
     suggestions: [],
     goals: [],
@@ -148,7 +152,9 @@ addExplanation(
 );
 // ===== Goals =====
 result.goals = detectGoals(profile);
-
+// ===== Personality =====
+result.personality = detectPersonality(profile);
+result.emotion = detectEmotion(profile);
 // ===== Reasoning =====
 result.reasoning = buildReasoning(profile, result);
 
@@ -156,12 +162,14 @@ if (DEBUG) {
 
     console.log("FACTS:", result.facts);
     console.log("STRENGTHS:", result.strengths);
+    console.log("PERSONALITY:", result.personality);
     console.log("JOBS:", result.jobs);
     console.log("SUGGESTIONS:", result.suggestions);
     console.log("GOALS:", result.goals);
     console.log("CONFIDENCE:", result.confidence);
     console.log("EXPLANATIONS:", result.explanations);
     console.log("REASONING:", result.reasoning);
+    console.log("EMOTION:", result.emotion);
 }
 
 return result;
