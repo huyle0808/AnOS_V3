@@ -1,6 +1,7 @@
 import { knowledge } from "./knowledge.js";
 import { applyRules } from "./inference.js";
 import { normalize } from "./normalize.js";
+import { addExplanation } from "./explanation.js";
 const DEBUG = true;
 
 // Thêm dữ liệu nhưng không bị trùng
@@ -49,11 +50,13 @@ obj = {
 export function analyze(profile) {
 
     const result = {
-        facts: [],
-        strengths: [],
-        jobs: [],
-        suggestions: []
-    };
+    facts: [],
+    strengths: [],
+    jobs: [],
+    suggestions: [],
+    confidence: {},
+    explanations: []
+};
 
     const favorite = Array.isArray(profile.favorite)
         ? profile.favorite
@@ -86,24 +89,53 @@ export function analyze(profile) {
     // ===== Sắp xếp theo điểm =====
     for (const field of fields) {
 
-        result[field] = result[field]
+        result[field] = [
+    ...new Set(
+        result[field]
             .sort((a, b) => b.score - a.score)
-            .map(x => x.text);
+            .map(x => x.text)
+    )
+];
 
     }
     
 
+        // ===== Tính Confidence =====
 
 
-    if (DEBUG) {
+for (const field of fields) {
 
-        console.log("FACTS:", result.facts);
-        console.log("STRENGTHS:", result.strengths);
-        console.log("JOBS:", result.jobs);
-        console.log("SUGGESTIONS:", result.suggestions);
+    const count = result[field].length;
+    result.confidence[field] = Math.min(100, count * 20);
 
-    }
+}
 
-    return result;
+// ===== Explanation =====
+
+
+addExplanation(
+    result.explanations,
+    "Knowledge",
+    "Phân tích dựa trên Knowledge Graph."
+);
+
+addExplanation(
+    result.explanations,
+    "Rules",
+    "Áp dụng các luật suy luận."
+);
+
+if (DEBUG) {
+
+    console.log("FACTS:", result.facts);
+    console.log("STRENGTHS:", result.strengths);
+    console.log("JOBS:", result.jobs);
+    console.log("SUGGESTIONS:", result.suggestions);
+    console.log("CONFIDENCE:", result.confidence);
+    console.log("EXPLANATIONS:", result.explanations);
+
+}
+
+return result;
 
 }
