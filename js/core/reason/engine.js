@@ -5,6 +5,7 @@ import { addExplanation } from "./explanation.js";
 
 import { scoreItem } from "./score.js";
 import { buildReasoning } from "./reasoning.js";
+import { detectGoals } from "./goal.js";
 const DEBUG = true;
 // Thêm dữ liệu nhưng không bị trùng
 function addUnique(target, items) {
@@ -56,6 +57,7 @@ export function analyze(profile) {
     strengths: [],
     jobs: [],
     suggestions: [],
+    goals: [],
     confidence: {},
     explanations: [],
     reasoning: []
@@ -144,19 +146,25 @@ addExplanation(
     "Rules",
     "Áp dụng các luật suy luận."
 );
+// ===== Goals =====
+result.goals = detectGoals(profile);
+
 // ===== Reasoning =====
 result.reasoning = buildReasoning(profile, result);
+
 if (DEBUG) {
 
     console.log("FACTS:", result.facts);
     console.log("STRENGTHS:", result.strengths);
     console.log("JOBS:", result.jobs);
     console.log("SUGGESTIONS:", result.suggestions);
+    console.log("GOALS:", result.goals);
     console.log("CONFIDENCE:", result.confidence);
     console.log("EXPLANATIONS:", result.explanations);
     console.log("REASONING:", result.reasoning);
 }
 
 return result;
+
 
 }

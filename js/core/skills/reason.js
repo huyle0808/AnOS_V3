@@ -31,7 +31,22 @@ if (
         reply += result.reasoning.join("<br>• ");
 
     }
+if (result.goals?.length) {
 
+    reply += "<br><br>🎯 Mục tiêu AI dự đoán:<br><br>";
+
+    result.goals.forEach(goal => {
+
+        reply +=
+            "• " + goal.goal +
+            " (" + goal.score + "%)" +
+            "<br>" +
+            goal.reason +
+            "<br><br>";
+
+    });
+
+}
     return reply;
 }
 
