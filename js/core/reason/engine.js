@@ -1,6 +1,6 @@
 import { knowledge } from "./knowledge.js";
 import { applyRules } from "./inference.js";
-
+import { normalize } from "./normalize.js";
 const DEBUG = true;
 
 // Thêm dữ liệu nhưng không bị trùng
@@ -11,22 +11,26 @@ function addUnique(target, items) {
     for (const item of items) {
 
         let obj;
+if (typeof item === "string") {
 
-        if (typeof item === "string") {
+    const text = normalize(item);
 
-            obj = {
-                id: item.toLowerCase(),
-                text: item,
-                score: 1
-            };
+    obj = {
+        id: text.toLowerCase(),
+        text: text,
+        score: 1
+    };
 
-        } else {
+}
+        else {
 
-            obj = {
-                id: item.id ?? item.text.toLowerCase(),
-                text: item.text,
-                score: item.score ?? 1
-            };
+            const text = normalize(item.text);
+
+obj = {
+    id: item.id ?? text.toLowerCase(),
+    text: text,
+    score: item.score ?? 1
+};
 
         }
 
@@ -87,6 +91,9 @@ export function analyze(profile) {
             .map(x => x.text);
 
     }
+    
+
+
 
     if (DEBUG) {
 

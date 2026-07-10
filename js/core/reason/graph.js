@@ -35,3 +35,29 @@ export function getAllNodes() {
     return Object.keys(knowledge);
 
 }
+// Duyệt toàn bộ node liên quan (1 cấp)
+export function expandGraph(nodes) {
+
+    const result = new Set(nodes);
+
+    for (const node of nodes) {
+
+        const links = getLinks(node);
+
+        for (const key in links) {
+
+            const values = links[key];
+
+            if (!Array.isArray(values)) continue;
+
+            for (const value of values) {
+                result.add(value);
+            }
+
+        }
+
+    }
+
+    return [...result];
+
+}
