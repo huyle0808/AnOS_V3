@@ -10,19 +10,30 @@ export function reason(message) {
 
     const result = analyze(profile);
 
-    // ===== PHÂN TÍCH =====
-    if (
-        text.includes("phân tích") ||
-        text.includes("hãy phân tích tôi")
-    ) {
+// ===== PHÂN TÍCH =====
+if (
+    text.includes("phân tích") ||
+    text.includes("hãy phân tích tôi")
+) {
 
-        if (result.facts.length === 0) {
-            return "Mình chưa có đủ dữ liệu để phân tích.";
-        }
-
-        return "📋 Phân tích về bạn:<br><br>• " +
-            result.facts.join("<br>• ");
+    if (result.facts.length === 0) {
+        return "Mình chưa có đủ dữ liệu để phân tích.";
     }
+
+    let reply = "📋 Phân tích về bạn:<br><br>";
+
+    reply += "• " + result.facts.join("<br>• ");
+
+    if (result.reasoning?.length) {
+
+        reply += "<br><br>🧠 Lý do AI kết luận:<br><br>• ";
+
+        reply += result.reasoning.join("<br>• ");
+
+    }
+
+    return reply;
+}
 
     // ===== ĐIỂM MẠNH =====
     if (

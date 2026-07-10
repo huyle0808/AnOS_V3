@@ -2,8 +2,10 @@ import { knowledge } from "./knowledge.js";
 import { applyRules } from "./inference.js";
 import { normalize } from "./normalize.js";
 import { addExplanation } from "./explanation.js";
-const DEBUG = true;
 
+import { scoreItem } from "./score.js";
+import { buildReasoning } from "./reasoning.js";
+const DEBUG = true;
 // Thêm dữ liệu nhưng không bị trùng
 function addUnique(target, items) {
 
@@ -55,7 +57,8 @@ export function analyze(profile) {
     jobs: [],
     suggestions: [],
     confidence: {},
-    explanations: []
+    explanations: [],
+    reasoning: []
 };
 
     const favorite = Array.isArray(profile.favorite)
@@ -85,7 +88,24 @@ export function analyze(profile) {
 
     // ===== Áp dụng Rules =====
     applyRules(profile, result, addUnique);
+// ===== Score Engine =====
 
+for (const field of fields) {
+
+    result[field] = result[field].map(item => {
+
+        let bonus = 0;
+
+        // Ưu tiên dữ liệu từ Rule Engine
+        if (item.score >= 2) {
+            bonus += 2;
+        }
+
+        return scoreItem(item, bonus);
+
+    });
+
+}
     // ===== Sắp xếp theo điểm =====
     for (const field of fields) {
 
@@ -124,7 +144,8 @@ addExplanation(
     "Rules",
     "Áp dụng các luật suy luận."
 );
-
+// ===== Reasoning =====
+result.reasoning = buildReasoning(profile, result);
 if (DEBUG) {
 
     console.log("FACTS:", result.facts);
@@ -133,7 +154,7 @@ if (DEBUG) {
     console.log("SUGGESTIONS:", result.suggestions);
     console.log("CONFIDENCE:", result.confidence);
     console.log("EXPLANATIONS:", result.explanations);
-
+    console.log("REASONING:", result.reasoning);
 }
 
 return result;
