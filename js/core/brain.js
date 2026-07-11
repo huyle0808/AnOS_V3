@@ -1,10 +1,7 @@
-
-import { pipeline } from "./pipeline.js";
+import { process } from "./brain/index.js";
 
 export async function think(message) {
 
-    
-
-    return await pipeline(message);
+    return await process(message);
 
 }

@@ -1,5 +1,6 @@
 import { greeting } from "./greeting.js";
 import { weather } from "./weather.js";
+import { time } from "./time.js";
 import { whoami } from "./whoami.js";
 import { thanks } from "./thanks.js";
 import { remember } from "./remember.js";
@@ -10,16 +11,18 @@ import { contextSkill } from "./context.js";
 import { calculator } from "./calculator.js";
 import { reason } from "./reason.js";
 import { fallback } from "./fallback.js";
-
+import { emotion } from "./emotion.js";
 export const skills = [
     greeting,
     weather,
+    time,
+    emotion,
     whoami,
     thanks,
     remember,
     teach,
     profile,
-    reason,      // <-- thêm dòng này
+    reason,
     history,
     contextSkill,
     calculator,
