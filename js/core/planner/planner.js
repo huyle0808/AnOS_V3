@@ -1,18 +1,14 @@
+import { addTask as saveTask } from "../task/task.js";
+
 export function createPlan(goal) {
 
     return {
         id: Date.now().toString(),
-
         goal,
-
         tasks: [],
-
         status: "waiting",
-
         createdAt: Date.now(),
-
         updatedAt: Date.now(),
-
         metadata: {}
     };
 
@@ -58,4 +54,20 @@ export function failTask(plan, id) {
         status: "failed"
     });
 
+}
+
+export function savePlanTasks(plan) {
+
+    for (const task of plan.tasks) {
+
+        saveTask({
+            id: task.id,
+            planId: plan.id,
+            goal: plan.goal,
+            ...task
+        });
+
+    }
+
+    return plan;
 }

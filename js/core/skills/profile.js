@@ -12,8 +12,6 @@ export function profile(message) {
     ) {
 
         const p = getProfile();
-        alert(JSON.stringify(p));
-        console.log("PROFILE =", p);
 
         let result = [];
 

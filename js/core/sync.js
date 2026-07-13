@@ -1,8 +1,10 @@
 import {
     getProfile,
     getHistory,
+    getTasks,
     setProfile,
-    setHistory
+    setHistory,
+    setTasks
 } from "./memory.js";
 
 // Nạp bộ nhớ từ server
@@ -20,7 +22,7 @@ export async function loadMemory() {
 
         setProfile(data.profile || {});
         setHistory(data.history || []);
-
+        setTasks(data.tasks || []);
         console.log("✅ Đã nạp bộ nhớ.");
 
     } catch (e) {
@@ -45,9 +47,10 @@ export async function saveMemory() {
             },
 
             body: JSON.stringify({
-                profile: getProfile(),
-                history: getHistory()
-            })
+    profile: getProfile(),
+    history: getHistory(),
+    tasks: getTasks()
+})
 
         });
 

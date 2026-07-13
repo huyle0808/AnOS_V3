@@ -9,6 +9,7 @@ import { history } from "./history.js";
 import { profile } from "./profile.js";
 import { contextSkill } from "./context.js";
 import { calculator } from "./calculator.js";
+import { taskSkill } from "../task/taskSkill.js";
 import { reason } from "./reason.js";
 import { fallback } from "./fallback.js";
 import { emotion } from "./emotion.js";
@@ -26,5 +27,6 @@ export const skills = [
     history,
     contextSkill,
     calculator,
+    taskSkill,
     fallback
 ];

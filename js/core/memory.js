@@ -1,6 +1,6 @@
 const profile = {};
 const history = [];
-
+const tasks = [];
 export function remember(key, value) {
     profile[key] = value;
 }
@@ -83,5 +83,18 @@ export function forget(key) {
 export function clearProfile() {
 
     Object.keys(profile).forEach(key => delete profile[key]);
+
+}
+export function getTasks() {
+    return [...tasks];
+}
+
+export function setTasks(data) {
+
+    tasks.length = 0;
+
+    if (Array.isArray(data)) {
+        tasks.push(...data);
+    }
 
 }
