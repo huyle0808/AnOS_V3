@@ -1,38 +1,36 @@
-/*import { skills } from "./skills/index.js";
-
-export async function route(message) {
-
-    console.log("===== ROUTER =====");
-
-    for (const skill of skills) {
-
-        console.log("Bắt đầu:", skill.name);
-
-        const reply = rgb(255,255,255) skill(message);
-
-        console.log("Kết thúc:", skill.name);
-
-        if (reply) {
-            console.log("Đã trả lời bởi:", skill.name);
-            return reply;
-        }
-    }
-
-    console.log("Không skill nào xử lý");
-
-    return null;
-}*/
+import { detectIntent } from "./intent/intent.js";
 import { skills } from "./skills/index.js";
 
 export async function route(message) {
 
-    for (const skill of skills) {
+    const intent = detectIntent(message);
+
+    console.log("🧭 Router | Intent:", intent);
+
+    const skill = skills[intent];
+
+    if (!skill) {
+
+        console.log("❌ Không tìm thấy skill:", intent);
+
+        return null;
+    }
+
+    try {
 
         const reply = await skill(message);
 
         if (reply) {
+
+            console.log("✔ Skill:", intent);
+
             return reply;
         }
+
+    } catch (e) {
+
+        console.error("❌ Skill Error:", e);
+
     }
 
     return null;

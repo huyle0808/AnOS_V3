@@ -1,5 +1,6 @@
 import { boot } from "./boot.js";
-
+import "../services/memory.js";
+import "../services/knowledge.js";
 let started = false;
 
 export async function startup() {

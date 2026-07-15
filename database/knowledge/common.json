@@ -1,0 +1,14 @@
+[
+  {
+    "keywords": ["xin chào", "chào"],
+    "answer": "Xin chào 👋 Mình là AnOS."
+  },
+  {
+    "keywords": ["bạn là ai"],
+    "answer": "Mình là AnOS AI Assistant."
+  },
+  {
+    "keywords": ["tạm biệt"],
+    "answer": "Hẹn gặp lại bạn nhé!"
+  }
+]

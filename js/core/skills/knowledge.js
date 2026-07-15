@@ -1,40 +1,15 @@
-/*export async function askKnowledge(question) {
+import { searchKnowledge } from "../knowledge/search.js";
 
-    try {
-
-        const res = await fetch("/knowledge/find", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ question })
-        });
-
-        if (!res.ok) {
-            return null;
-        }
-
-        const data = await res.json();
-
-        if (data.found) {
-            return data.answer;
-        }
-
-        return null;
-
-    } catch (err) {
-
-        console.error("Knowledge:", err);
-
-        return null;
-
-    }
-
-}*/
 export async function askKnowledge(question) {
 
-    console.log("askKnowledge chạy:", question);
+    console.log("📚 Knowledge:", question);
 
-    return null;
+    return await searchKnowledge(question);
+
+}
+
+export async function knowledge(message) {
+
+    return await askKnowledge(message);
 
 }

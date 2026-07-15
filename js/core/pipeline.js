@@ -1,161 +1,73 @@
-import {
-    addHistory,
-    remember,
-    rememberList
-} from "./memory.js";
-
 import { askAI } from "./ai.js";
-import { saveMemory } from "./sync.js";
-import { askKnowledge } from "./skills/knowledge.js";
+import { processKnowledge } from "./pipeline/knowledge.js";
 import { route } from "./router.js";
 
+import { processEmotion } from "./pipeline/emotion.js";
+import {
+    processMemory,
+    processHistory
+} from "./pipeline/memory.js";
+import {
+    updateContext,
+    getContext
+} from "./pipeline/context.js";
+import { processAI } from "./pipeline/ai.js";
+import { processReason } from "./pipeline/reason.js";
+import { createPlan } from "./reason/planner.js";
 export async function pipeline(message) {
 
     const text = message.trim();
-    const lower = text.toLowerCase();
+const context = getContext();
+
+const plan = createPlan(text);
+
+console.log("📋 Plan:", plan);
+    // ===== GHI NHỚ =====
+    await processMemory(text);
 
     // ===== PHÂN TÍCH CẢM XÚC =====
-   // const emotion = analyzeEmotion(text);
+    const { emotion, emotionReply } = processEmotion(text);
 
-   // console.log("Emotion:", emotion);
-const emotion = {
-    score: 0,
-    emotion: ""
-};
-    let emotionReply = "";
+    // ===== THỬ XỬ LÝ BẰNG SKILL =====
+    let reply = await route(text);
 
-    if (emotion.score >= 60) {
+// ===== THỬ KIẾN THỨC =====
+if (!reply) {
 
-        emotionReply = "Mình hiểu cảm xúc của bạn.<br><br>";
+    console.log("📚 Không có Skill, tìm trong Knowledge...");
 
-        emotionReply +=
-            "🧠 Cảm xúc nhận diện: " +
-            emotion.emotion +
-            "<br>";
+    reply = await processKnowledge(text);
 
-        emotionReply +=
-            "📊 Mức độ: " +
-            emotion.score +
-            "%<br><br>";
+}
 
-        switch (emotion.emotion) {
+// ===== SUY LUẬN (nếu có) =====
+if (!reply) {
 
-            case "😊 Vui":
-                emotionReply +=
-                    "Thật tuyệt khi biết bạn đang vui. Hy vọng niềm vui này sẽ tiếp tục cùng bạn.";
-                break;
+    console.log("🧠 Không có Knowledge, Reason...");
 
-            case "😢 Buồn":
-                emotionReply +=
-                    "Mình rất tiếc khi biết bạn đang buồn. Nếu muốn, bạn có thể chia sẻ thêm.";
-                break;
+    reply = await processReason(text);
 
-            case "😟 Lo lắng":
-                emotionReply +=
-                    "Lo lắng là điều ai cũng gặp. Chúng ta sẽ giải quyết từng bước.";
-                break;
+}
 
-            case "😠 Tức giận":
-                emotionReply +=
-                    "Mình hiểu bạn đang rất khó chịu. Hãy kể mình nghe nhé.";
-                break;
+// ===== GỌI AI =====
+if (!reply) {
 
-            default:
-                emotionReply +=
-                    "Mình luôn sẵn sàng lắng nghe bạn.";
-        }
-    }
+    console.log("🤖 Không có Reason, gọi AI...");
 
-    // ===== GHI NHỚ TÊN =====
-    let m = text.match(/^tên tôi là\s+(.+)$/i);
+    reply = await processAI(text);
 
-    if (m) {
-
-        const name = m[1].trim();
-
-        if (name && name.toLowerCase() !== "gì") {
-            remember("name", name);
-        }
-    }
-
-    // ===== GHI NHỚ TUỔI =====
-    m = text.match(/^tôi\s+(\d+)\s+tuổi$/i);
-
-    if (m) {
-        remember("age", m[1]);
-    }
-
-    // ===== GHI NHỚ NGHỀ =====
-    m = text.match(/^tôi làm\s+(.+)$/i);
-
-    if (m) {
-
-        const job = m[1].trim();
-
-        if (job) {
-            remember("job", job);
-        }
-    }
-
-    // ===== GHI NHỚ ĐỒ UỐNG =====
-    m = text.match(/^tôi thích uống\s+(.+)$/i);
-
-    if (m) {
-
-        const drink = m[1].trim();
-        const check = drink.toLowerCase();
-
-        if (
-            drink &&
-            check !== "gì" &&
-            check !== "gì?" &&
-            check !== "bao nhiêu" &&
-            check !== "thứ gì"
-        ) {
-            remember("drink", drink);
-        }
-    }
-
-   //  ===== THỬ XỬ LÝ BẰNG SKILL =====
-  let reply = await route(text);
-    // ===== THỬ KIẾN THỨC =====
-    if (!reply) {
-
-        const answer = await askKnowledge(text);
-
-        if (answer) {
-            reply = answer;
-        }
-    }
-
-    // ===== GỌI GEMINI =====
-    if (!reply) {
-        reply = await askAI(text);
-    }
+}
 
     // ===== GHÉP PHẢN HỒI CẢM XÚC =====
     if (emotionReply) {
 
-        if (reply) {
-            reply = emotionReply + "<br><br>" + reply;
-        } else {
-            reply = emotionReply;
-        }
-
+        reply = reply
+            ? emotionReply + "<br><br>" + reply
+            : emotionReply;
     }
 
     // ===== LƯU LỊCH SỬ =====
-    if (
-        !lower.includes("lịch sử") &&
-        !lower.includes("đã nói gì") &&
-        !lower.includes("nhớ gì")
-    ) {
-
-        addHistory("👤 " + text);
-        addHistory("🤖 " + reply);
-
-        await saveMemory();
-    }
-
+    await processHistory(text, reply);
+    updateContext(text, reply);
     return reply;
 }

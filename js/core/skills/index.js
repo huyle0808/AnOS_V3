@@ -13,20 +13,39 @@ import { taskSkill } from "../task/taskSkill.js";
 import { reason } from "./reason.js";
 import { fallback } from "./fallback.js";
 import { emotion } from "./emotion.js";
-export const skills = [
+import { knowledge } from "./knowledge.js";
+export const skills = {
+
     greeting,
+
     weather,
+
     time,
+    
+    knowledge,
+
     emotion,
+
     whoami,
+
     thanks,
-    remember,
+
+    memory: remember,
+
     teach,
+
     profile,
+
     reason,
+
     history,
-    contextSkill,
+
+    context: contextSkill,
+
     calculator,
-    taskSkill,
+
+    task: taskSkill,
+
     fallback
-];
+
+};
