@@ -30,7 +30,15 @@ const INTENTS = {
     "tuổi tôi",
     "bạn nhớ tuổi tôi"
 ],
-
+    analyze: [
+    "phân tích",
+    "đánh giá",
+    "nhận xét",
+    "phân tích tôi",
+    "phân tích về tôi",
+    "đánh giá tôi",
+    "nhận xét về tôi"
+],
     time: [
         "mấy giờ",
         "giờ",
@@ -115,7 +123,10 @@ if (
 if (/(tên.*gì|tôi tên gì|bạn nhớ tên|bạn biết tên|bạn còn nhớ tên|thông tin của tôi|hồ sơ của tôi|bạn nhớ gì về tôi|bạn biết gì về tôi|tuổi tôi|bạn nhớ tuổi)/i.test(text)) {
     return "profile";
 }
-
+// Analyze ưu tiên
+if (/(phân tích|đánh giá|nhận xét).*(tôi|bản thân)|phân tích về tôi/i.test(text)) {
+    return "analyze";
+}
 
     // Memory
     if (

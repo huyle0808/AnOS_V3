@@ -1,15 +1,17 @@
-import { skills } from "../skills/index.js";
+export async function think(plan, text, handlers) {
 
-export async function thinkStep(step, message) {
+    for (const step of plan) {
 
-    console.log("🧠 Think:", step);
+        const fn = handlers[step];
 
-    const skill = skills[step];
+        if (!fn) continue;
 
-    if (!skill) {
-        return null;
+        const result = await fn(text);
+
+        if (result) {
+            return result;
+        }
     }
 
-    return await skill(message);
-
+    return null;
 }

@@ -1,3 +1,1 @@
-import { process } from "./brain.js";
-
-export { process };
+export { process } from "./brain.js";

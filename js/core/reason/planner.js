@@ -19,7 +19,10 @@ export function createPlan(message) {
             return [
                 "profile"
             ];
-
+        case "analyze":
+    return [
+        "reason"
+    ];
         case "knowledge":
             return [
                 "knowledge"

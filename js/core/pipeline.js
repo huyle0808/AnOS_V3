@@ -14,6 +14,7 @@ import {
 import { processAI } from "./pipeline/ai.js";
 import { processReason } from "./pipeline/reason.js";
 import { createPlan } from "./reason/planner.js";
+import { think } from "./reason/thinker.js";
 export async function pipeline(message) {
 
     const text = message.trim();
