@@ -298,6 +298,79 @@ app.get("/knowledge", async (req, res) => {
     }
 
 });
+// ================= GEMINI API =================
+
+app.post("/api/gemini", async (req, res) => {
+console.log("================================");
+    console.log("📨 /api/gemini ĐÃ ĐƯỢC GỌI");
+    console.log("Body:", req.body);
+    console.log("================================");
+
+    const {
+        prompt,
+        context = {},
+        options = {}
+    } = req.body;
+
+    
+    if (!prompt) {
+    return res.status(400).json({
+        success: false,
+        text: "",
+        error: "Thiếu prompt."
+    });
+}
+    try {
+
+        const fullPrompt = `
+Bạn là AnOS V3 AI.
+
+Thông tin ngữ cảnh:
+${JSON.stringify(context, null, 2)}
+
+Người dùng:
+${prompt}
+
+Luôn trả lời bằng tiếng Việt.
+`;
+
+        const result = await ai.models.generateContent({
+
+            model: options.model || "gemini-2.5-flash",
+
+            contents: fullPrompt
+
+        });
+
+        res.json({
+
+    success: true,
+
+    text: result.text ?? "",
+
+    tokens: result.usageMetadata?.totalTokenCount ?? 0,
+
+    provider: "gemini-2.5-flash"
+
+});
+
+    } catch (error) {
+
+        console.error("Gemini API:", error);
+
+        res.status(500).json({
+
+            success: false,
+
+            text: "",
+
+            error: error?.message || "Unknown Error"
+
+        });
+
+    }
+
+});
 // ================= START SERVER =================
 
 const PORT = process.env.PORT || 3000;

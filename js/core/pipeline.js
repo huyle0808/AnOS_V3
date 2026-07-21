@@ -1,74 +1,106 @@
-import { askAI } from "./ai.js";
-import { processKnowledge } from "./pipeline/knowledge.js";
 import { route } from "./router.js";
 
 import { processEmotion } from "./pipeline/emotion.js";
+
 import {
-    processMemory,
     processHistory
 } from "./pipeline/memory.js";
+
 import {
     updateContext,
     getContext
 } from "./pipeline/context.js";
-import { processAI } from "./pipeline/ai.js";
-import { processReason } from "./pipeline/reason.js";
-import { createPlan } from "./reason/planner.js";
-import { think } from "./reason/thinker.js";
+
+import {
+    createPlan
+} from "./reason/planner.js";
+
+import AIService from "./services/AIService.js";
+
+
+// Khởi tạo AI một lần
+const ai = new AIService();
+
+
 export async function pipeline(message) {
 
+    console.log("🚀 pipeline() START");
+    console.log("📩 Message:", message);
+
     const text = message.trim();
-const context = getContext();
 
-const plan = createPlan(text);
+    // Lấy context hiện tại
+    const context = getContext();
+    console.log("📦 Context:", context);
 
-console.log("📋 Plan:", plan);
-    // ===== GHI NHỚ =====
-    await processMemory(text);
+    // Lập kế hoạch
+    const plan = createPlan(text);
+    console.log("📋 Plan:", plan);
 
-    // ===== PHÂN TÍCH CẢM XÚC =====
-    const { emotion, emotionReply } = processEmotion(text);
+    // Phân tích cảm xúc
+    const {
+        emotion,
+        emotionReply
+    } = processEmotion(text);
 
-    // ===== THỬ XỬ LÝ BẰNG SKILL =====
+    console.log("😊 Emotion:", emotion);
+
+    // ==========================
+    // 1. Skill Router
+    // ==========================
+
+    console.log("① Router");
+
     let reply = await route(text);
 
-// ===== THỬ KIẾN THỨC =====
-if (!reply) {
+    console.log("✅ Router Reply:", reply);
 
-    console.log("📚 Không có Skill, tìm trong Knowledge...");
+    // ==========================
+    // 2. AI SERVICE
+    // ==========================
 
-    reply = await processKnowledge(text);
+    if (!reply) {
 
-}
+        console.log("② Chuyển sang AIService");
 
-// ===== SUY LUẬN (nếu có) =====
-if (!reply) {
+        reply = await ai.process(text);
 
-    console.log("🧠 Không có Knowledge, Reason...");
+        console.log("✅ AI Reply:", reply);
 
-    reply = await processReason(text);
+    }
 
-}
+    // ==========================
+    // 3. Ghép cảm xúc
+    // ==========================
 
-// ===== GỌI AI =====
-if (!reply) {
-
-    console.log("🤖 Không có Reason, gọi AI...");
-
-    reply = await processAI(text);
-
-}
-
-    // ===== GHÉP PHẢN HỒI CẢM XÚC =====
     if (emotionReply) {
 
         reply = reply
             ? emotionReply + "<br><br>" + reply
             : emotionReply;
+
     }
 
-    // ===== LƯU LỊCH SỬ =====
-    await processHistory(text, reply);
-    updateContext(text, reply);
+    // ==========================
+    // 4. Lưu lịch sử
+    // ==========================
+
+    console.log("③ Save History");
+
+    await processHistory(
+        text,
+        reply
+    );
+
+    console.log("④ Update Context");
+
+    updateContext(
+        text,
+        reply
+    );
+
+    console.log("🏁 pipeline() END");
+
     return reply;
+
 }

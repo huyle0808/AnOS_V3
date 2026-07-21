@@ -2,6 +2,12 @@ import { getKnowledge } from "./cache.js";
 
 function normalize(text) {
 
+    if (text === null || text === undefined) {
+        return "";
+    }
+
+    text = String(text);
+
     return text
         .toLowerCase()
         .normalize("NFD")

@@ -32,10 +32,23 @@ input.addEventListener("keydown", (e) => {
 });
 
 function addMessage(sender, text) {
+
+    if (text === null || text === undefined) {
+        text = "";
+    }
+
+    if (typeof text !== "string") {
+        text = JSON.stringify(text, null, 2);
+    }
+
     const div = document.createElement("div");
     div.className = sender === "Bạn" ? "user" : "bot";
-    div.innerHTML = `<div class="bubble">${text.replace(/\n/g, "<br>")}</div>`;
+
+    div.innerHTML =
+        `<div class="bubble">${text.replace(/\n/g, "<br>")}</div>`;
+
     messages.appendChild(div);
+
     window.scrollTo({
         top: document.body.scrollHeight,
         behavior: "smooth"

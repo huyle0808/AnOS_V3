@@ -37,6 +37,7 @@ export const skills = {
     profile,
 
     reason,
+    analyze: reason,    
 
     history,
 
