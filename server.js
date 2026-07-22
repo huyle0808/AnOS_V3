@@ -3,90 +3,67 @@ import dotenv from "dotenv";
 import { GoogleGenAI } from "@google/genai";
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 
 dotenv.config();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const app = express();
 
-app.use(express.json());
-app.use(express.static("."));
+app.use(express.json({ limit: "2mb" }));
+app.use(express.static(__dirname));
 
 const ai = new GoogleGenAI({
     apiKey: process.env.GEMINI_API_KEY
 });
 
-// ================= FILE =================
+const MEMORY_FILE = path.join(__dirname, "memory.json");
+const TEACH_FILE = path.join(__dirname, "knowledge.json");
+const KNOWLEDGE_FOLDER = path.join(__dirname, "database", "knowledge");
 
-const MEMORY_FILE = "./memory.json";
-const TEACH_FILE = "./knowledge.json";
-const KNOWLEDGE_FOLDER = "./database/knowledge";
+function readJson(filePath, fallback) {
+    try {
+        return JSON.parse(fs.readFileSync(filePath, "utf8"));
+    } catch {
+        return fallback;
+    }
+}
 
-// ================= MEMORY =================
+function writeJson(filePath, data) {
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf8");
+}
 
 function loadMemory() {
-
-    try {
-
-        return JSON.parse(
-            fs.readFileSync(MEMORY_FILE, "utf8")
-        );
-
-    } catch {
-
-        return {
-            profile: {},
-            history: []
-        };
-
-    }
-
+    return readJson(MEMORY_FILE, { profile: {}, history: [] });
 }
 
 function saveMemory(data) {
 
-    fs.writeFileSync(
-        MEMORY_FILE,
-        JSON.stringify(data, null, 2)
-    );
+    console.log("SAVE MEMORY:");
+    console.log(JSON.stringify(data, null, 2));
+
+    writeJson(MEMORY_FILE, data);
 
 }
 
-// ================= TEACH KNOWLEDGE =================
-
 function loadTeachKnowledge() {
-
-    try {
-
-        return JSON.parse(
-            fs.readFileSync(TEACH_FILE, "utf8")
-        );
-
-    } catch {
-
-        return [];
-
-    }
-
+    return readJson(TEACH_FILE, []);
 }
 
 function saveTeachKnowledge(data) {
-
-    fs.writeFileSync(
-        TEACH_FILE,
-        JSON.stringify(data, null, 2)
-    );
-
+    writeJson(TEACH_FILE, data);
 }
-// ================= CHAT =================
+
+function geminiErrorReply(error) {
+    if (error?.status === 401) return "Gemini API key không hợp lệ.";
+    if (error?.status === 429) return "Gemini đã hết quota hoặc đang bị giới hạn.";
+    if (error?.status === 503) return "Máy chủ Gemini đang bận, bạn thử lại sau nhé.";
+    return "Không thể kết nối Gemini. Bạn kiểm tra mạng và GEMINI_API_KEY trong file .env.";
+}
 
 app.post("/chat", async (req, res) => {
-
-    const {
-        message,
-        profile,
-        history
-    } = req.body;
-
+    const { message, profile, history } = req.body;
     const memory = loadMemory();
 
     if (profile && typeof profile === "object") {
@@ -100,7 +77,7 @@ app.post("/chat", async (req, res) => {
     saveMemory(memory);
 
     const prompt = `
-Bạn là AnOS V3, một trợ lý AI thân thiện.
+Bạn là AnOS V3, một trợ lý AI Agent thân thiện và thực tế.
 
 Thông tin người dùng:
 ${JSON.stringify(memory.profile, null, 2)}
@@ -111,276 +88,140 @@ ${memory.history.join("\n")}
 Người dùng:
 ${message}
 
-Nếu đã biết thông tin người dùng thì hãy sử dụng khi trả lời.
-
-Nếu không biết thì trả lời bình thường.
-
-Luôn trả lời bằng tiếng Việt.
+Hãy trả lời bằng tiếng Việt. Nếu yêu cầu lớn, hãy chia thành các bước cụ thể.
 `;
 
     try {
-
         const result = await ai.models.generateContent({
-
             model: "gemini-2.5-flash",
-
             contents: prompt
-
         });
 
-        res.json({
-
-            reply: result.text || "Mình chưa có câu trả lời."
-
-        });
-
-    } catch (err) {
-
-        console.error("Gemini:", err);
-
-        if (err.status === 401) {
-
-            return res.json({
-                reply: "⚠️ Gemini API Key không hợp lệ."
-            });
-
-        }
-
-        if (err.status === 429) {
-
-            return res.json({
-                reply: "⚠️ Gemini đã hết quota."
-            });
-
-        }
-
-        if (err.status === 503) {
-
-            return res.json({
-                reply: "⚠️ Máy chủ Gemini đang bận."
-            });
-
-        }
-
-        return res.json({
-
-            reply: "⚠️ Không thể kết nối Gemini."
-
-        });
-
+        res.json({ reply: result.text || "Mình chưa có câu trả lời." });
+    } catch (error) {
+        console.error("Gemini /chat error:", error);
+        res.json({ reply: geminiErrorReply(error) });
     }
-
 });
-// ================= MEMORY API =================
 
 app.get("/memory", (req, res) => {
-
     res.json(loadMemory());
-
 });
 
 app.post("/memory", (req, res) => {
-
     saveMemory(req.body);
-
-    res.json({
-        ok: true
-    });
-
+    res.json({ ok: true });
 });
 
-// ================= KNOWLEDGE FIND =================
-
 app.post("/knowledge/find", (req, res) => {
-
-    const { question } = req.body;
-
+    const { question = "" } = req.body;
     const list = loadTeachKnowledge();
-
-    const item = list.find(x =>
-        x.question.toLowerCase() === question.toLowerCase()
+    const item = list.find((x) =>
+        String(x.question || "").toLowerCase() === question.toLowerCase()
     );
 
     if (item) {
-
-        return res.json({
-            found: true,
-            answer: item.answer
-        });
-
+        return res.json({ found: true, answer: item.answer });
     }
 
-    return res.json({
-        found: false
-    });
-
+    return res.json({ found: false });
 });
 
-// ================= KNOWLEDGE TEACH =================
-
 app.post("/knowledge/teach", (req, res) => {
+    const { question, answer } = req.body;
 
-    const {
-        question,
-        answer
-    } = req.body;
+    if (!question || !answer) {
+        return res.status(400).json({ ok: false, error: "Thiếu question hoặc answer." });
+    }
 
     const list = loadTeachKnowledge();
-
-    const index = list.findIndex(x =>
-        x.question.toLowerCase() === question.toLowerCase()
+    const index = list.findIndex((x) =>
+        String(x.question || "").toLowerCase() === question.toLowerCase()
     );
 
     if (index >= 0) {
-
         list[index].answer = answer;
-
     } else {
-
-        list.push({
-            question,
-            answer
-        });
-
+        list.push({ question, answer });
     }
 
     saveTeachKnowledge(list);
-
-    res.json({
-        ok: true
-    });
-
+    res.json({ ok: true });
 });
 
-// ================= KNOWLEDGE LOAD =================
-
 app.get("/knowledge", async (req, res) => {
-
     try {
-
-        const folder = path.resolve(KNOWLEDGE_FOLDER);
-
-        const files = await fs.promises.readdir(folder);
-
-        let knowledge = [];
+        const files = await fs.promises.readdir(KNOWLEDGE_FOLDER);
+        const knowledge = [];
 
         for (const file of files) {
+            if (!file.endsWith(".json")) continue;
 
-            if (!file.endsWith(".json")) {
-                continue;
-            }
-
-            const filePath = path.join(folder, file);
-
-            const text = await fs.promises.readFile(
-                filePath,
-                "utf8"
-            );
-
-            const data = JSON.parse(text);
+            const filePath = path.join(KNOWLEDGE_FOLDER, file);
+            const data = JSON.parse(await fs.promises.readFile(filePath, "utf8"));
 
             if (Array.isArray(data)) {
-
                 knowledge.push(...data);
-
             }
-
         }
 
         res.json(knowledge);
-
-    } catch (err) {
-
-        console.error("Knowledge API:", err);
-
+    } catch (error) {
+        console.error("Knowledge API error:", error);
         res.json([]);
-
     }
-
 });
-// ================= GEMINI API =================
 
 app.post("/api/gemini", async (req, res) => {
-console.log("================================");
-    console.log("📨 /api/gemini ĐÃ ĐƯỢC GỌI");
-    console.log("Body:", req.body);
-    console.log("================================");
+    const { prompt, context = {}, options = {} } = req.body;
 
-    const {
-        prompt,
-        context = {},
-        options = {}
-    } = req.body;
-
-    
     if (!prompt) {
-    return res.status(400).json({
-        success: false,
-        text: "",
-        error: "Thiếu prompt."
-    });
-}
+        return res.status(400).json({
+            success: false,
+            text: "",
+            error: "Thiếu prompt."
+        });
+    }
+
     try {
-
         const fullPrompt = `
-Bạn là AnOS V3 AI.
+Bạn là AnOS V3 AI Agent.
 
-Thông tin ngữ cảnh:
+Ngữ cảnh:
 ${JSON.stringify(context, null, 2)}
 
-Người dùng:
+Yêu cầu:
 ${prompt}
 
-Luôn trả lời bằng tiếng Việt.
+Luôn trả lời bằng tiếng Việt. Hãy cụ thể, có cấu trúc, và ưu tiên kết quả dùng được ngay.
 `;
 
         const result = await ai.models.generateContent({
-
             model: options.model || "gemini-2.5-flash",
-
             contents: fullPrompt
-
         });
 
         res.json({
-
-    success: true,
-
-    text: result.text ?? "",
-
-    tokens: result.usageMetadata?.totalTokenCount ?? 0,
-
-    provider: "gemini-2.5-flash"
-
-});
-
-    } catch (error) {
-
-        console.error("Gemini API:", error);
-
-        res.status(500).json({
-
-            success: false,
-
-            text: "",
-
-            error: error?.message || "Unknown Error"
-
+            success: true,
+            text: result.text ?? "",
+            tokens: result.usageMetadata?.totalTokenCount ?? 0,
+            provider: options.model || "gemini-2.5-flash"
         });
-
+    } catch (error) {
+        console.error("Gemini API error:", error);
+        res.status(500).json({
+            success: false,
+            text: "",
+            error: error?.message || geminiErrorReply(error)
+        });
     }
-
 });
-// ================= START SERVER =================
 
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-
     console.log("================================");
-    console.log("🚀 AnOS V3 Server Started");
+    console.log("AnOS V3 Server Started");
+    console.log(`http://127.0.0.1:${PORT}`);
     console.log("================================");
-    console.log(`🌐 http://127.0.0.1:${PORT}`);
-    console.log("================================");
-
 });

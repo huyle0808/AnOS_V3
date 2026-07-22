@@ -44,8 +44,11 @@ function addMessage(sender, text) {
     const div = document.createElement("div");
     div.className = sender === "Bạn" ? "user" : "bot";
 
-    div.innerHTML =
-        `<div class="bubble">${text.replace(/\n/g, "<br>")}</div>`;
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
+    bubble.textContent = text;
+
+    div.appendChild(bubble);
 
     messages.appendChild(div);
 

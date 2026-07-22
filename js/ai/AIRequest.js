@@ -9,6 +9,7 @@ export default class AIRequest {
     } = {}) {
 
         this.prompt = prompt;
+        this.message = prompt;
         this.capability = capability;
         this.provider = provider;
         this.context = context;

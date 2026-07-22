@@ -98,3 +98,38 @@ export function setTasks(data) {
     }
 
 }
+// ==============================
+// Persistent Memory
+// ==============================
+
+export function exportMemory(){
+
+    return {
+        profile,
+        history,
+        tasks
+    };
+
+}
+
+
+export function importMemory(data){
+
+    if(!data) return;
+
+
+    setProfile(
+        data.profile || {}
+    );
+
+
+    setHistory(
+        data.history || []
+    );
+
+
+    setTasks(
+        data.tasks || []
+    );
+
+}

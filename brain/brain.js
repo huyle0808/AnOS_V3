@@ -1,22 +1,132 @@
+// ============================================
+// AnOS V4 Brain Engine
+// Author : ChatGPT + Huy
+// Version: 4.0
+// ============================================
+
+import Planner from "./Planner.js";
+import Router from "./Router.js";
+import Memory from "./Memory.js";
+import Workflow from "./Workflow.js";
+import { detectPersonality } from "./personality.js";
+
 export default class Brain {
 
-    async think(text) {
+    constructor() {
 
-        text = text.toLowerCase();
+        this.planner = new Planner();
 
-        if (text.includes("chào")) {
-            return "Xin chào 👋";
-        }
+        this.router = new Router();
 
-        if (text.includes("trời đẹp")) {
-            return "Đúng rồi, hôm nay thời tiết khá đẹp.";
-        }
+        this.memory = new Memory();
 
-        if (text.includes("bạn là ai")) {
-            return "Mình là AnOS V3.";
-        }
+        this.workflow = new Workflow();
 
-        return null;
+    }
+
+    async process(message, profile = {}) {
+
+        console.log("🧠 Brain đang xử lý...");
+
+        //----------------------------------
+        // 1. Đọc trí nhớ
+        //----------------------------------
+
+        const history = await this.memory.load();
+
+        //----------------------------------
+        // 2. Phân tích tính cách
+        //----------------------------------
+
+        const personality =
+            detectPersonality(profile);
+
+        //----------------------------------
+        // 3. Lập kế hoạch
+        //----------------------------------
+
+        const plan =
+            await this.planner.create(
+
+                message,
+
+                history,
+
+                personality
+
+            );
+
+        //----------------------------------
+        // 4. Chọn Agent
+        //----------------------------------
+
+        const agent =
+            this.router.select(plan);
+
+        //----------------------------------
+        // 5. Workflow
+        //----------------------------------
+
+        const steps =
+            this.workflow.create(
+
+                plan.intent
+
+            );
+
+        //----------------------------------
+        // 6. Agent thực thi
+        //----------------------------------
+
+        const result =
+            await agent.execute({
+
+                message,
+
+                plan,
+
+                personality,
+
+                history,
+
+                steps
+
+            });
+
+        //----------------------------------
+        // 7. Lưu Memory
+        //----------------------------------
+
+        await this.memory.save({
+
+            question: message,
+
+            answer: result.reply,
+
+            intent: plan.intent
+
+        });
+
+        //----------------------------------
+        // 8. Trả kết quả
+        //----------------------------------
+
+        return {
+
+            success: true,
+
+            reply: result.reply,
+
+            intent: plan.intent,
+
+            workflow: steps,
+
+            personality,
+
+            historyCount: history.length
+
+        };
+
     }
 
 }

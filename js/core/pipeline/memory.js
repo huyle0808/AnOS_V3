@@ -10,11 +10,11 @@ export async function processMemory(text) {
     let m;
 
     // ===== GHI NHỚ TÊN =====
-    m = text.match(/^tên tôi là\s+(.+)$/i);
+    m = text.match(/^(tên tôi là|tôi tên là|tôi là)\s+(.+)$/i);
 
     if (m) {
 
-        const name = m[1].trim();
+        const name = m[2].trim();
 
         if (
             name &&
@@ -39,12 +39,28 @@ export async function processMemory(text) {
 
         const job = m[1].trim();
 
-        if (
-            job &&
-            job.toLowerCase() !== "gì"
-        ) {
-            remember("job", job);
-        }
+const invalidJob = [
+    "gì",
+    "gì?",
+    "nghề gì",
+    "nghề gì?",
+    "nghề",
+    "không biết",
+    "không rõ"
+];
+
+const checkJob = job
+    .toLowerCase()
+    .replace(/[?.!,]/g,"")
+    .trim();
+
+
+if (
+    job &&
+    !invalidJob.includes(checkJob)
+) {
+    remember("job", job);
+}
     }
 
     // ===== GHI NHỚ ĐỒ UỐNG =====
