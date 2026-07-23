@@ -1,17 +1,113 @@
 // ==========================================
-// AnOS V3
-// Step Manager
+// AnOS V3.5
+// Dynamic Step Manager
+// Agent Pipeline Controller
 // ==========================================
+
 
 
 export default class StepManager {
 
 
 
-    constructor(){
+constructor(){
 
 
-        this.steps = [];
+    // lưu toàn bộ Agent Step
+
+    this.steps = {};
+
+
+}
+
+
+
+
+
+
+// ==========================================
+// Register Agent
+// ==========================================
+
+
+register(name, step){
+
+
+    if(
+        !name ||
+        !step
+    ){
+
+        console.warn(
+            "⚠ Cannot register invalid step:",
+            name
+        );
+
+        return;
+
+    }
+
+
+
+    this.steps[name] = step;
+
+
+
+    console.log(
+        "➕ Registered Step:",
+        name
+    );
+
+
+}
+
+
+
+
+
+
+// ==========================================
+// Get Step
+// ==========================================
+
+
+get(name){
+
+
+    return this.steps[name];
+
+
+}
+
+
+
+
+
+
+
+
+// ==========================================
+// Execute Dynamic Plan
+// ==========================================
+
+
+async execute(state){
+
+
+
+    if(
+        !state ||
+        !Array.isArray(state.plan) ||
+        state.plan.length === 0
+    ){
+
+
+        console.log(
+            "⚠ No execution plan"
+        );
+
+
+        return state;
 
 
     }
@@ -20,106 +116,169 @@ export default class StepManager {
 
 
 
-    add(step){
-
-
-        this.steps.push(step);
-
-
-    }
+    console.log(
+        "🧠 EXECUTE PLAN:",
+        state.plan
+    );
 
 
 
 
 
-    async execute(state){
+
+    for(
+        const stepName of state.plan
+    ){
 
 
 
-        for(
-            const step of this.steps
+
+
+        const step =
+        this.get(stepName);
+
+
+
+
+
+        // ==========================
+        // Check Step
+        // ==========================
+
+
+        if(
+            !step ||
+            typeof step.run !== "function"
         ){
 
 
 
-            const stepName =
-                step.constructor.name;
-
-
-
-            console.log(
-                "▶ Running:",
+            console.warn(
+                "⚠ Missing or Invalid Step:",
                 stepName
             );
 
 
 
-            try {
+            continue;
+
+
+        }
 
 
 
-                state =
-                await step.run(state);
+
+
+        console.log(
+            "▶ Running:",
+            stepName
+        );
 
 
 
-                // lưu trace
 
-                if(
-                    typeof state.addStep === "function"
-                ){
-
-                    state.addStep(
-                        stepName
-                    );
-
-                }
+        const startTime =
+        Date.now();
 
 
 
-                console.log(
-                    "✔ Completed:",
+
+
+        try{
+
+
+
+
+
+            state =
+            await step.run(state);
+
+
+
+
+
+            // ======================
+            // Save Trace
+            // ======================
+
+
+            if(
+                typeof state.addStep === "function"
+            ){
+
+
+                state.addStep(
                     stepName
                 );
 
 
-
-            } catch(error){
-
-
-
-                console.error(
-
-                    "❌ Step Error:",
-                    stepName,
-
-                    error
-
-                );
+            }
 
 
 
-                state.error = {
-
-                    step:
-                    stepName,
 
 
-                    message:
-                    error.message,
-
-
-                    time:
-                    new Date()
-
-                };
+            const duration =
+            Date.now() - startTime;
 
 
 
-                break;
+
+
+            console.log(
+                "✔ Completed:",
+                stepName,
+                "|",
+                duration,
+                "ms"
+            );
+
+
+
+
+
+        }
+        catch(error){
+
+
+
+
+
+            console.error(
+                "❌ Step Failed:",
+                stepName,
+                error
+            );
+
+
+
+
+
+
+            if(
+                typeof state.fail === "function"
+            ){
+
+
+                state.fail(error);
 
 
             }
+            else{
+
+
+                state.error =
+                error.message;
+
+
+            }
+
+
+
+
+
+
+            break;
 
 
 
@@ -127,10 +286,21 @@ export default class StepManager {
 
 
 
-        return state;
-
 
     }
+
+
+
+
+
+
+    return state;
+
+
+
+}
+
+
 
 
 

@@ -1,78 +1,88 @@
 // ==========================================
-// AnOS V3
+// AnOS V4
 // AI Step
 // ==========================================
 
+import AIService from "../../services/AIService.js";
 
-import AIService 
-from "../../services/AIService.js";
+const ai = new AIService();
 
+export default class AIStep{
 
+    async run(state){
 
-const ai =
-new AIService();
+        // Đã có reply thì bỏ qua
 
+        if(
+            state.reply &&
+            state.reply.trim()!==""
+        ){
 
+            return state;
 
-export default class AIStep {
+        }
 
+        try{
 
+            const payload={
 
-async run(state){
+                input:
+                    state.input,
 
+                context:
+                    state.context,
 
+                memory:
+                    state.memory,
 
-    // Nếu Router đã xử lý
-    if(state.reply){
+                intent:
+                    state.intent,
 
-        return state;
+                capability:
+                    state.capability,
+
+                goal:
+                    state.goal,
+
+                requirement:
+                    state.requirement,
+
+                solution:
+                    state.solution,
+
+                codePlan:
+                    state.codePlan,
+
+                emotion:
+                    state.emotion
+
+            };
+
+            console.log(
+                "📦 AI Payload:",
+                payload
+            );
+
+            state.reply =
+                await ai.process(payload);
+
+            return state;
+
+        }
+        catch(error){
+
+            console.error(
+                "❌ AIStep:",
+                error
+            );
+
+            state.reply =
+                "Xin lỗi, AI đang bận.";
+
+            return state;
+
+        }
 
     }
-
-
-
-    try{
-
-
-        state.reply =
-        await ai.process(
-
-            state.input,
-
-            state.context
-
-        );
-
-
-
-        return state;
-
-
-
-    }catch(error){
-
-
-        console.error(
-            "AIStep Error:",
-            error
-        );
-
-
-
-        state.reply =
-        "AI gặp lỗi khi xử lý yêu cầu.";
-
-
-
-        return state;
-
-
-    }
-
-
-
-}
-
-
 
 }

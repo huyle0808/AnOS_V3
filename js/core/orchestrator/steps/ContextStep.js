@@ -1,30 +1,69 @@
 // ==========================================
-// AnOS AI Agent
+// AnOS V3.5
 // Context Step
 // ==========================================
 
-
-import { getContext }
-from "../../context.js";
-
-
+import {
+    getContext
+} from "../../pipeline/context.js";
 
 export default class ContextStep {
 
+    async run(state){
 
+        try{
 
-async run(state){
+            const context =
+                getContext() || {};
 
+            state.context = {
 
-    state.context =
-        getContext();
+                ...state.context,
 
+                ...context
 
-    return state;
+            };
 
+            // Đưa lịch sử Memory vào Context
 
-}
+            if(
+                state.memory &&
+                Array.isArray(state.memory.history)
+            ){
 
+                state.context.history =
+                    state.memory.history
+                    .slice(-10);
 
+            }
+
+            // Metadata
+
+            state.context.intent =
+                state.intent;
+
+            state.context.capability =
+                state.capability;
+
+            state.context.goal =
+                state.goal;
+
+            console.log(
+                "✅ Context loaded"
+            );
+
+        }
+        catch(error){
+
+            console.warn(
+                "Context Error:",
+                error
+            );
+
+        }
+
+        return state;
+
+    }
 
 }

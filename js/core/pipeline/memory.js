@@ -7,8 +7,21 @@ import { saveMemory } from "../sync.js";
 
 export async function processMemory(text) {
 
-    let m;
+    
+    if (typeof text !== "string") {
 
+    text = text?.input || "";
+
+}
+
+text = text.trim();
+
+if (!text) {
+
+    return;
+
+}
+    let m;
     // ===== GHI NHỚ TÊN =====
     m = text.match(/^(tên tôi là|tôi tên là|tôi là)\s+(.+)$/i);
 

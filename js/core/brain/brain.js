@@ -1,50 +1,14 @@
-/*import { pipeline } from "../pipeline.js";
-import { emit } from "../event/index.js";
-import { startup } from "../system/startup.js";
-  
-export async function process(message) {  
-  await startup();
-    // Kiểm tra dữ liệu  
-    if (!message || typeof message !== "string") {  
-        return "Bạn muốn mình giúp gì?";  
-    }  
-  
-    const text = message.trim();  
-  
-    if (!text) {  
-        return "Bạn muốn mình giúp gì?";  
-    }  
-  
-    try {  
-  
-        // Báo Brain bắt đầu xử lý  
-        emit("brain:start", text);  
-  
-        const reply = await pipeline(text);  
-  
-        // Báo Brain xử lý xong  
-        emit("brain:end", reply);  
-  
-        return reply || "Mình chưa có câu trả lời.";  
-  
-    } catch (error) {  
-  
-        console.error("Brain Error:", error);  
-  
-        // Có thể phát sự kiện lỗi  
-        emit("brain:error", error);  
-  
-        return "Xin lỗi, đã xảy ra lỗi trong quá trình xử lý.";  
-  
-    }  
-  
-}*/
 import { pipeline } from "../pipeline.js";
 import { emit } from "../event/index.js";
 import { startup } from "../system/startup.js";
 
 export async function process(message) {
+
+    console.log("🧠 process START");
+
     await startup();
+
+    console.log("✅ startup");
 
     if (!message || typeof message !== "string") {
         return "Bạn muốn mình giúp gì?";
@@ -52,23 +16,38 @@ export async function process(message) {
 
     const text = message.trim();
 
+    console.log("📩", text);
+
     if (!text) {
         return "Bạn muốn mình giúp gì?";
     }
 
     try {
+
         emit("brain:start", text);
 
-        const reply = await pipeline(text);
+        console.log("🚀 Gọi pipeline");
 
-        emit("brain:end", reply);
+        const state = await pipeline(text);
 
-        return reply || "Mình chưa có câu trả lời.";
+        console.log("✅ Pipeline trả về:", state);
+
+        emit("brain:end", state);
+
+        if (state && typeof state === "object") {
+            return state.reply || "Mình chưa có câu trả lời.";
+        }
+
+        return state;
+
     } catch (error) {
-        console.error("Brain Error:", error);
+
+        console.error("❌ Brain Error:", error);
 
         emit("brain:error", error);
 
-        return "Xin lỗi, đã xảy ra lỗi trong quá trình xử lý.";
+        return "Xin lỗi, đã xảy ra lỗi.";
+
     }
+
 }

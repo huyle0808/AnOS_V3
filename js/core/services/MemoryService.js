@@ -11,20 +11,41 @@ export default class MemoryService {
 
     async process(message, reply = null) {
 
-        await processMemory(message);
+        // ==========================
+        // Chuẩn hóa message
+        // ==========================
+
+        const text =
+            typeof message === "string"
+
+                ? message
+
+                : message?.input || "";
+
+        await processMemory(text);
 
         if (reply) {
-            await processHistory(message, reply);
+
+            await processHistory(text, reply);
+
         }
 
-        const profile = getProfile() || {};
+        const profile =
+            getProfile() || {};
 
         return {
-            found: Object.keys(profile).length > 0,
+
+            found:
+                Object.keys(profile).length > 0,
+
             answer: null,
+
             profile,
+
             source: "memory",
-            confidence: 1.0
+
+            confidence: 1
+
         };
 
     }

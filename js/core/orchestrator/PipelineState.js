@@ -10,38 +10,78 @@ export default class PipelineState {
     constructor(message){
 
 
-        // Người dùng nhập
+        // Input người dùng
 
-        this.input = message;
-
-
-
-        // Context hiện tại
-
-        this.context = {};
+        this.input = message || "";
 
 
 
-        // Cảm xúc
+        // Context hệ thống
 
-        this.emotion = null;
+        this.context = {
+
+            lastMessage:"",
+            lastReply:"",
+            lastIntent:"",
+            user:{}
+
+        };
 
 
-        this.emotionReply = null;
+
+        // Emotion
+
+        this.emotion = {
+
+            score:0,
+            emotion:""
+
+        };
+
+
+        this.emotionReply = "";
 
 
 
-        // Kế hoạch xử lý
+        // Planner
 
         this.plan = [];
 
 
 
-        // Ý định người dùng
+        // Intent
 
         this.intent = null;
 
+        // Confidence AI
 
+this.confidence={
+
+    intent:0,
+
+    plan:0,
+
+    response:0
+
+};
+
+
+
+// Goals / Objectives
+
+this.goals=[];
+
+
+
+// Agent runtime
+
+this.agent={
+
+    current:"",
+
+    history:[]
+
+};
 
         // Router
 
@@ -49,19 +89,25 @@ export default class PipelineState {
 
 
 
-        // Kết quả cuối
+        // AI Response cuối
 
-        this.reply = null;
-
-
-
-        // Bộ nhớ phiên
-
-        this.memory = [];
+        this.reply = "";
 
 
 
-        // Lỗi nếu có
+        // Memory
+
+        this.memory = {
+
+            profile:{},
+            history:[],
+            tasks:[]
+
+        };
+
+
+
+        // Error
 
         this.error = null;
 
@@ -97,7 +143,7 @@ export default class PipelineState {
 
         this.metadata.steps.push({
 
-            name,
+            name:name,
 
             time:
                 new Date()
@@ -111,11 +157,15 @@ export default class PipelineState {
 
 
 
-    finish(){
+    fail(error){
+
+
+        this.error =
+            error?.message || error;
 
 
         this.metadata.status =
-            "completed";
+            "error";
 
 
         this.metadata.endTime =
@@ -125,6 +175,27 @@ export default class PipelineState {
     }
 
 
+
+
+
+    finish(){
+
+
+        if(this.metadata.status !== "error"){
+
+
+            this.metadata.status =
+                "completed";
+
+
+        }
+
+
+        this.metadata.endTime =
+            new Date();
+
+
+    }
 
 
 }

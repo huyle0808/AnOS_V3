@@ -1,4 +1,3 @@
-
 import "./core/plugin/testPlugin.js";
 import { think } from "./core/brain.js";
 import { loadMemory } from "./core/sync.js";
@@ -10,19 +9,39 @@ const messages = document.getElementById("messages");
 loadMemory();
 
 btn.onclick = async () => {
+
+    console.log("① Click");
+
     const text = input.value.trim();
+
+    console.log("② Text:", text);
+
     if (!text) return;
 
     input.value = "";
+
     addMessage("Bạn", text);
 
     try {
+
+        console.log("③ Gọi think()");
+
         const reply = await think(text);
+
+        console.log("④ think() trả về:", reply);
+
         addMessage("AnOS", reply);
+
+        console.log("⑤ Hoàn tất");
+
     } catch (e) {
-        console.error(e);
+
+        console.error("❌ app.js Error:", e);
+
         addMessage("AnOS", "Đã xảy ra lỗi.");
+
     }
+
 };
 
 input.addEventListener("keydown", (e) => {
