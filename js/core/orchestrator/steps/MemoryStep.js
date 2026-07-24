@@ -3,7 +3,10 @@
 // Memory Step
 // ==========================================
 
-import { processHistory }
+import { 
+    processMemory,
+    processHistory
+}
 from "../../pipeline/memory.js";
 
 import { updateContext }
@@ -28,13 +31,27 @@ export default class MemoryStep {
 
         }
 
+
         if(!Array.isArray(state.memory.history)){
 
             state.memory.history = [];
 
         }
 
-        // Lưu lịch sử vào Memory Engine
+
+        // ==========================
+        // Lưu thông tin Profile
+        // ==========================
+
+        await processMemory(
+            state.input
+        );
+
+
+        // ==========================
+        // Lưu lịch sử
+        // ==========================
+
         await processHistory(
 
             state.input,
@@ -43,7 +60,11 @@ export default class MemoryStep {
 
         );
 
+
+        // ==========================
         // Cập nhật Context
+        // ==========================
+
         updateContext(
 
             state.input,
@@ -52,7 +73,11 @@ export default class MemoryStep {
 
         );
 
-        // Lưu vào PipelineState
+
+        // ==========================
+        // Pipeline History
+        // ==========================
+
         state.memory.history.push({
 
             user: state.input,
@@ -63,16 +88,33 @@ export default class MemoryStep {
 
         });
 
-        // Giới hạn lịch sử (20 cuộc hội thoại gần nhất)
+
         if(state.memory.history.length > 20){
 
             state.memory.history.shift();
 
         }
 
+
         console.log(
             "✅ Memory updated"
         );
+
+
+        // ==========================
+        // Memory Confirmation
+        // ==========================
+
+        if(
+            state.intent === "memory" &&
+            !state.reply
+        ){
+
+            state.reply =
+                "Mình đã ghi nhớ thông tin này.";
+
+        }
+
 
         return state;
 

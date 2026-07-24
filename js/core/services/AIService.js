@@ -8,11 +8,11 @@ import ResponseBuilder from "./ResponseBuilder.js";
 
 import AIGateway from "../../ai/AIGateway.js";
 import AIRequest from "../../ai/AIRequest.js";
-
+import MemoryAnswerService from "./MemoryAnswerService.js";
 export default class AIService{
 
     constructor(){
-
+        
         this.promptBuilder =
             new PromptBuilder();
 
@@ -21,11 +21,41 @@ export default class AIService{
 
         this.gateway =
             new AIGateway();
+        this.memoryAnswer =
+    new MemoryAnswerService();
 
     }
 
     async process(payload){
+      // ==========================
+// Memory Fast Answer
+// Chỉ trả lời khi đang hỏi thông tin đã lưu
+// ==========================
 
+if (payload?.intent === "chat") {
+
+    const memoryReply =
+        this.memoryAnswer.answer(
+            payload?.input || ""
+        );
+
+    if (memoryReply) {
+
+        console.log("🧠 Memory Answer");
+
+        return this.responseBuilder.build({
+
+            answer: memoryReply,
+
+            source: "memory",
+
+            confidence: 1
+
+        });
+
+    }
+
+}
         try{
 
             console.log(
@@ -45,24 +75,27 @@ export default class AIService{
             // ==========================
 
             const request =
-                new AIRequest({
+    new AIRequest({
 
-                    prompt,
+        prompt,
 
-                    capability:
-                        payload.capability ||
+        input: payload.input,
 
-                        "general",
+        intent: payload.intent,
 
-                    provider:
-                        payload.provider ||
+        capability:
+            payload.capability || "general",
 
-                        "gemini",
+        provider:
+            payload.provider || "gemini",
 
-                    context:
-                        payload
+        context: payload,
 
-                });
+        memory: payload.memory,
+
+        goal: payload.goal
+
+    });
 
             // ==========================
             // Execute

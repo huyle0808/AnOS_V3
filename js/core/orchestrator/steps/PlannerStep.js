@@ -21,7 +21,6 @@ const text =
 
 
 
-
 // ==========================================
 // Initialize
 // ==========================================
@@ -47,20 +46,25 @@ state.priority = "normal";
 
 const greetings = [
 
-"chào",
-"xin chào",
-"hello",
-"hi",
-"alo",
-"hey"
+    "chào",
+    "xin chào",
+    "hello",
+    "hi",
+    "alo",
+    "hey",
+    "good morning",
+    "good afternoon",
+    "good evening"
 
 ];
 
 
 
-if(
-greetings.includes(text)
-){
+
+if (
+    greetings.some(item => text === item)
+)
+{
 
 
 state.plan=[
@@ -94,46 +98,67 @@ return state;
 
 
 
+// Memory Question
+// ==========================================
+
+const memoryQuestion =
+/(tên tôi là gì|tôi tên gì|tôi là ai|bạn( còn)? nhớ tên tôi( không)?|bạn có nhớ tên tôi( không)?|tôi bao nhiêu tuổi|tôi mấy tuổi|tuổi tôi|bạn nhớ tuổi tôi|tôi làm nghề gì|tôi làm gì|nghề của tôi|tôi thích uống gì|đồ uống yêu thích|tôi thích màu gì|màu yêu thích)/i;
+if (memoryQuestion.test(text)) {
+
+    state.plan = [
+
+        "understand",
+
+        "memory",
+
+        "ai",
+
+        "review"
+
+    ];
+
+    state.route = "ai";
+
+    state.intent = "chat";
+
+    state.capability = "general_assistant";
+
+    console.log("📋 Plan: memory question");
+
+    return state;
+}
 
 
 
+// ==========================================
 // ==========================================
 // Memory Manager
 // ==========================================
 
+const memoryPattern =
+/^(tên tôi là|tôi tên là|tôi là\s+\S+|tôi\s+(năm nay\s+)?\d+\s*tuổi|mình\s+\d+\s*tuổi|tôi làm|tôi thích|tôi sống|tôi ở|tôi sinh|tôi học|tôi yêu|tôi ghét|tôi có|tôi muốn|tôi cần|lưu thông tin|ghi nhớ)/i;
 
-if(
-/(tên tôi|nhớ tôi|quên tôi|bạn biết tôi|lưu thông tin)/i
-.test(text)
-){
+if (memoryPattern.test(text)) {
 
-
-state.plan=[
-
-"memory"
-
+   state.plan=[
+    "understand",
+    "memory",
+    
+    "review"
 ];
 
+    state.route = "memory";
 
-state.route="memory";
+    state.intent = "memory";
 
-state.intent="memory";
+    state.capability = "memory_manager";
 
-state.capability=
-"memory_manager";
+    console.log("📋 Plan: memory");
 
-
-
-console.log(
-"📋 Plan: memory"
-);
-
-
-
-return state;
-
-
+    return state;
 }
+
+
 
 
 
@@ -156,27 +181,19 @@ if(
 
 state.plan=[
 
+"memory",
 
 "analyze_requirement",
 
-
 "design_solution",
-
 
 "generate_code",
 
-
 "ai",
 
-
-"review",
-
-
-"memory"
-
+"review"
 
 ];
-
 
 
 state.intent=
@@ -235,22 +252,17 @@ if(
 
 
 
-state.plan=[
+state.plan=
 
 
+[
+"memory",
 "creative",
-
-
 "ai",
-
-
-"review",
-
-
-"memory"
-
-
+"review"
 ];
+
+
 
 
 
@@ -310,25 +322,18 @@ if(
 
 
 
-state.plan=[
+state.plan=
 
 
+[
+"memory",
 "analyze_task",
-
-
 "create_steps",
-
-
 "ai",
-
-
-"review",
-
-
-"memory"
-
-
+"review"
 ];
+
+
 
 
 
@@ -388,18 +393,13 @@ if(
 
 
 
-state.plan=[
+state.plan = 
 
-
+    [
+"memory",
 "understand",
-
-
 "ai",
-
-
 "review"
-
-
 ];
 
 
@@ -439,15 +439,13 @@ return state;
 
 state.plan=[
 
+    "understand",
 
-"understand",
+    "memory",
 
+    "ai",
 
-"ai",
-
-
-"review"
-
+    "review"
 
 ];
 

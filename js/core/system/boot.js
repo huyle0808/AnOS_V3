@@ -29,27 +29,44 @@ export async function boot() {
     if (ready) return;
 
     console.log("⚙ Boot Runtime");
-
+    console.log("Services:", [...services.keys()]);
     for (const [name, fn] of services) {
 
-        console.log(`▶ ${name}`);
+    console.log("▶ Start:", name);
 
-        try {
+    try {
 
-            await fn();
+        console.log("   gọi service...");
+        await fn();
 
-await emit(`${name}.ready`);
+        console.log("   service xong");
 
-console.log(`✔ ${name}`);
+        console.log("   emit...");
+        await emit(`${name}.ready`);
 
-        } catch (e) {
+        console.log("   emit xong");
 
-            console.error(`❌ ${name}:`, e);
+        console.log("✔ Finish:", name);
 
-            throw e;
-        }
+    } catch (e) {
+
+        console.error("❌ Boot Error:", name, e);
+
+        throw e;
     }
+}
+
+console.log("▶ Start Plugins");
+
 await startPlugins();
+
+console.log("✔ Plugins Done");
+
+ready = true;
+
+await emit("boot.ready");
+
+console.log("✔ Boot Finished");
     ready = true;
 
 await emit("boot.ready");
